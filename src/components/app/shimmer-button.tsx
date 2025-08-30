@@ -10,7 +10,7 @@ type ShimmerButtonProps = {
 } & React.ComponentProps<typeof Button>
 
 export function ShimmerButton({ children, icon, service, ...props }: ShimmerButtonProps) {
-  const whatsappNumber = '5598983291170'
+  const whatsappNumber = '5598986133076'
   const defaultMessage = encodeURIComponent(`👋 Olá! Gostaria de conhecer melhor os serviços da Serviscon. ${service || ''}`)
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${defaultMessage}`
 
