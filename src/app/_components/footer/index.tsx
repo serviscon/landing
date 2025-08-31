@@ -30,7 +30,7 @@ export function Footer() {
                 <GrLinkedin />
               </SocialIconTooltip>
               <SocialIconTooltip
-                link="https://wa.me/5598983291170?text=%F0%9F%91%8B%20Ol%C3%A1!%20Gostaria%20de%20conhecer%20melhor%20os%20servi%C3%A7os%20da%20Serviscon."
+                link="https://wa.me/5598986133076?text=%F0%9F%91%8B%20Ol%C3%A1!%20Gostaria%20de%20conhecer%20melhor%20os%20servi%C3%A7os%20da%20Serviscon."
                 label="Whatsapp"
               >
                 <FaWhatsapp />
