@@ -10,7 +10,7 @@ const services = [
     title: 'Limpeza e Conservação',
     description:
       'Serviços completos de limpeza e manutenção da conservação de ambientes com produtos profissionais e equipe especializada',
-    image: '/services/limpeza.jpeg',
+    image: '/services/limpeza2.jpg',
     features: [
       'Profissionais treinados em técnicas de asseio',
       'Produtos de alta performance',
@@ -21,9 +21,9 @@ const services = [
   },
   {
     icon: <Shield className="size-8" />,
-    title: 'Portaria e Segurança',
-    description: 'Controle de acesso e segurança patrimonial com profissionais qualificados e sistemas modernos',
-    image: '/services/portaria.jpg',
+    title: 'Portaria',
+    description: 'Controle de acesso com profissionais qualificados e sistemas modernos',
+    image: '/services/portaria2.png',
     features: [
       'Primeira impressão positiva para moradores e clientes',
       'Profissionais preparados para diversas situações',
@@ -34,7 +34,7 @@ const services = [
   },
   {
     icon: <UserCheck className="size-8" />,
-    title: 'Recepção Profissional',
+    title: 'Recepção',
     description: 'Atendimento profissional e acolhedor para seus visitantes e clientes com excelência no atendimento',
     image: '/services/recepcao.jpg',
     features: [
@@ -59,7 +59,7 @@ const services = [
   },
   {
     icon: <Eye className="size-8" />,
-    title: 'Supervisão Especializada',
+    title: 'Supervisão Operacional',
     description: 'Acompanhamento e gestão da qualidade dos serviços prestados com relatórios e métricas',
     image: '/services/supervisao.jpg',
     features: [
@@ -92,7 +92,7 @@ export function TypesServices() {
           key={index}
           className="group hover:-translate-y-2 flex flex-col overflow-hidden border-0 bg-white p-0 transition-all duration-300 hover:shadow-2xl"
         >
-          <div className="relative h-48 overflow-hidden">
+          <div className="relative h-64 overflow-hidden">
             <Image
               src={service.image as string}
               alt={service.title}
