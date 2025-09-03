@@ -15,7 +15,7 @@ export function Footer() {
               <Image src="/serviscon-logo.png" alt="Logo" width={170} height={150} priority quality={100} />
             </div>
             <p className="mb-4 max-w-lg text-muted/80">
-              Mais de 15 anos transformando empresas através da terceirização inteligente. Somos a solução que seu negócio precisa
+              Mais de 10 anos transformando empresas através da terceirização inteligente. Somos a solução que seu negócio precisa
               para crescer com eficiência e qualidade.
             </p>
 
@@ -42,10 +42,10 @@ export function Footer() {
             title="Nossos Serviços"
             servicesOrSegments={[
               'Limpeza e Conservação',
-              'Portaria e Segurança',
-              'Recepção Profissional',
+              'Portaria',
+              'Recepção',
               'Jardinagem e Paisagismo',
-              'Supervisão Especializada',
+              'Supervisão',
               'Manutenção Predial',
             ]}
           />
