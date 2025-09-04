@@ -59,7 +59,7 @@ const services = [
   },
   {
     icon: <Eye className="size-8" />,
-    title: 'Supervisão Operacional',
+    title: 'Supervisão',
     description: 'Acompanhamento e gestão da qualidade dos serviços prestados com relatórios e métricas',
     image: '/services/supervisao.jpg',
     features: [
@@ -101,7 +101,7 @@ export function TypesServices() {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
             <div className="absolute top-4 right-4 flex h-12 w-12 items-center justify-center rounded-xl bg-white/90 backdrop-blur-sm">
-              <div className="text-blue-600 transition-colors duration-300 group-hover:text-green-600">{service.icon}</div>
+              <div className="text-blue-600 transition-colors duration-300 group-hover:text-blue-800">{service.icon}</div>
             </div>
           </div>
 

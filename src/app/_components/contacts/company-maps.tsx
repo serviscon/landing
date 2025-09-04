@@ -43,7 +43,7 @@ export default function CompanyMaps({
   return (
     <Card className="mx-auto w-full max-w-4xl">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-sky-800 text-xl">
+        <CardTitle className="flex items-center gap-2 text-blue-800 text-xl">
           <MapPin className="size-5" />
           Localização - {companyName}
         </CardTitle>
@@ -73,7 +73,7 @@ export default function CompanyMaps({
           <div className="flex flex-col gap-2 sm:flex-row">
             <Button
               onClick={handleGetDirections}
-              className="flex items-center gap-2 bg-sky-600 font-bold transition-colors duration-300 hover:bg-sky-700"
+              className="flex items-center gap-2 bg-blue-600 font-bold transition-colors duration-300 hover:bg-blue-700"
             >
               <ExternalLink />
               Como Chegar
@@ -91,7 +91,7 @@ export default function CompanyMaps({
         )}
 
         <div className="rounded-lg bg-muted/50 p-4">
-          <h4 className="mb-2 font-medium text-sky-800 text-sm">Endereço Completo:</h4>
+          <h4 className="mb-2 font-medium text-blue-800 text-sm">Endereço Completo:</h4>
           <p className="flex flex-col items-center justify-center gap-1 text-muted-foreground text-sm md:flex-row md:flex-wrap md:gap-x-3">
             <span>Prédio Comercial MN Center</span>
             <span>R. dos Ipês, 32 - 2º Andar, Sala 06</span>

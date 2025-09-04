@@ -264,7 +264,7 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-sky-600 rounded-full;
+    @apply bg-blue-800 rounded-full;
   }
 
   .scroll-hidden::-webkit-scrollbar {

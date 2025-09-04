@@ -8,10 +8,10 @@ import { StatItem } from './stat-item'
 
 export function Contacts() {
   return (
-    <section id="contacts" className="bg-gradient-to-br from-sky-600 to-emerald-600 py-20">
+    <section id="contacts" className="bg-gradient-to-br from-blue-800 to-sky-500 py-20">
       <div className="container mx-auto px-4">
         <div className="mx-auto max-w-4xl text-center">
-          <Badge className="bg-emerald-100 text-emerald-800 hover:bg-emerald-100">📲 Nossos Contatos</Badge>
+          <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">📲 Nossos Contatos</Badge>
           <h2 className="mt-4 mb-6 font-bold text-4xl text-white lg:text-5xl">
             Pronto para <strong className="backdrop-blur-sm">Reduzir Custos e Aumentar a Eficiência?</strong>
           </h2>
@@ -33,7 +33,7 @@ export function Contacts() {
             <ContactItems icon={MapPin} title="Endereço" description="São Luís, MA" />
           </div>
 
-          <ShimmerButton className="before:mask before:mask-composite-exclude relative font-bold text-sky-700 transition-all duration-300 before:absolute before:inset-0 before:animate-[shimmer_3s_linear_infinite] before:rounded-md before:bg-[length:200%_100%] before:bg-[linear-gradient(120deg,transparent,#FFBF00,transparent)] before:p-[1px] before:content-[''] hover:scale-105 hover:bg-sky-100 hover:text-sky-800 hover:brightness-110 md:mt-0">
+          <ShimmerButton className="before:mask before:mask-composite-exclude relative font-bold text-blue-700 transition-all duration-300 before:absolute before:inset-0 before:animate-[shimmer_3s_linear_infinite] before:rounded-md before:bg-[length:200%_100%] before:bg-[linear-gradient(120deg,transparent,#FFBF00,transparent)] before:p-[1px] before:content-[''] hover:scale-105 hover:bg-sky-100 hover:text-sky-800 hover:brightness-110 md:mt-0">
             <FaWhatsapp />
             SOLICITAR ORÇAMENTO GRÁTIS
           </ShimmerButton>

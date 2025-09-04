@@ -7,7 +7,7 @@ import { SocialIconTooltip } from './social-icon-tooltip'
 
 export function Footer() {
   return (
-    <footer className="bg-sky-950 py-12 text-white">
+    <footer className="bg-blue-950 py-12 text-white">
       <div className="container mx-auto px-4">
         <div className="grid gap-8 md:grid-cols-4">
           <div className="col-span-2">

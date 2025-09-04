@@ -28,7 +28,7 @@ export function NavItems({ setOpen }: NavItemsProps) {
           <Button
             variant="outline"
             onClick={() => setOpen(false)}
-            className="w-full bg-white font-semibold text-sky-800 transition-colors duration-500 hover:from-white hover:to-white hover:font-bold hover:text-sky-900 lg:hidden"
+            className="w-full bg-white font-semibold text-blue-800 transition-colors duration-500 hover:from-white hover:to-white hover:font-bold hover:text-blue-900 lg:hidden"
           >
             <Link href={item.href} className="w-full">
               {item.label}
@@ -38,7 +38,7 @@ export function NavItems({ setOpen }: NavItemsProps) {
           {/* Desktop: só texto com hover branco */}
           <Link
             href={item.href}
-            className="hidden items-center rounded-xl px-4 py-2 font-semibold text-sky-900 transition-all duration-500 hover:bg-white/80 hover:text-sky-950 hover:shadow-sm lg:inline-flex"
+            className="hidden items-center rounded-xl px-4 py-2 font-semibold text-blue-900 transition-all duration-500 hover:bg-white/80 hover:text-blue-950 hover:shadow-sm lg:inline-flex"
           >
             {item.label}
           </Link>

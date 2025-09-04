@@ -14,9 +14,9 @@ export function Hero() {
         <div className="grid min-h-[80vh] items-center gap-12 lg:grid-cols-2">
           <div className="animate-fade-in space-y-8">
             <article className="space-y-4">
-              <Badge className="bg-sky-100 text-sky-800 hover:bg-sky-100">✨ Terceirização Premium de Mão de Obra</Badge>
+              <Badge className="bg-sky-100 text-blue-800 hover:bg-sky-100">✨ Terceirização Premium de Mão de Obra</Badge>
               <h1 className="font-bold text-5xl leading-tight lg:text-6xl">
-                <span className="bg-gradient-to-r from-blue-600 to-emerald-600 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-blue-800 to-sky-600 bg-clip-text text-transparent">
                   Transforme seu negócio
                 </span>
                 <br />
@@ -31,7 +31,7 @@ export function Hero() {
 
             <div className="flex flex-col gap-4 sm:flex-row">
               <ShimmerButton icon={<FaWhatsapp />}>SOLICITAR ORÇAMENTO GRÁTIS</ShimmerButton>
-              <Button variant="outline" size="lg" className="text-sky-700 hover:text-sky-900">
+              <Button variant="outline" size="lg" className="text-blue-700 hover:text-blue-900">
                 <Link href="#services" className="flex items-center gap-1.5">
                   👀 CONHECER SERVIÇOS
                 </Link>
