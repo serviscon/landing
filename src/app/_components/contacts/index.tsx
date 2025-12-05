@@ -13,7 +13,7 @@ export function Contacts() {
         <div className="mx-auto max-w-4xl text-center">
           <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">📲 Nossos Contatos</Badge>
           <h2 className="mt-4 mb-6 font-bold text-4xl text-white lg:text-5xl">
-           <strong className="backdrop-blur-sm"> Pronto para Reduzir Custos e Aumentar a Eficiência?</strong>
+           <strong > Pronto para Reduzir Custos e Aumentar a Eficiência?</strong>
           </h2>
           <p className="mb-8 text-sky-100 text-xl">
             Solicite um orçamento gratuito e descubra como podemos transformar sua operação em até 30 dias
