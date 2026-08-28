@@ -17,6 +17,7 @@ export function NavItems({ setOpen }: NavItemsProps) {
     { label: 'Parceiros', href: '#partners' },
     { label: 'Segmentos', href: '#segments' },
     { label: 'Serviços', href: '#services' },
+    { label: 'Notícias', href: '#noticias' },
     { label: 'Contato', href: '#contacts' },
   ]
 
@@ -47,7 +48,7 @@ export function NavItems({ setOpen }: NavItemsProps) {
 
       <Separator className="my-2 bg-muted/50 lg:hidden" />
 
-      <ShimmerButton icon={<FaWhatsapp />}>Solicitar Orçamento</ShimmerButton>
+      <ShimmerButton icon={<FaWhatsapp />}>Solicitar Orçamento</ShimmerButton>
     </>
   )
 }

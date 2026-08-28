@@ -5,6 +5,7 @@ import { Hero } from './_components/hero'
 import { Partners } from './_components/partners'
 import { Segments } from './_components/segments'
 import { Services } from './_components/services'
+import { NoticiasSection } from './_components/noticias-section'
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
       <Services />
       <Segments />
       <Partners />
+      <NoticiasSection />
       <Contacts />
       <Footer />
     </main>
