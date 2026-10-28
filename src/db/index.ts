@@ -1,26 +1,13 @@
-import { BetterSQLite3Database, drizzle } from 'drizzle-orm/better-sqlite3'
-import Database from 'better-sqlite3'
-import path from 'path'
+import { createClient } from '@libsql/client'
+import { drizzle } from 'drizzle-orm/libsql'
 import * as schema from './schema'
 
-let db: BetterSQLite3Database<typeof schema>
+// Em produção usa o Turso (TURSO_DATABASE_URL + TURSO_AUTH_TOKEN).
+// Sem essas variáveis, cai num arquivo SQLite local para desenvolvimento.
+const client = createClient({
+  url: process.env.TURSO_DATABASE_URL || 'file:./data/noticias.db',
+  authToken: process.env.TURSO_AUTH_TOKEN,
+})
 
-function getDb() {
-  if (!db) {
-    const dbPath = process.env.DATABASE_URL?.replace('file:', '') || path.join(process.cwd(), 'data', 'noticias.db')
-    
-    // Criar diretório se não existir
-    const dir = path.dirname(dbPath)
-    const fs = require('fs')
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true })
-    }
-
-    const sqlite = new Database(dbPath)
-    db = drizzle(sqlite, { schema })
-  }
-  return db
-}
-
-export const database = getDb()
+export const database = drizzle(client, { schema })
 export * from './schema'

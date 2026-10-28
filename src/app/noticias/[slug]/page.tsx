@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       images: noticia.imagemUrl
         ? [
             {
-              url: `https://landing.serviscon.com.br${noticia.imagemUrl}`,
+              url: new URL(noticia.imagemUrl, 'https://landing.serviscon.com.br').toString(),
               width: 1200,
               height: 630,
               alt: noticia.titulo,

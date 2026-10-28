@@ -7,14 +7,19 @@ export type JWTPayload = {
   exp: number
 }
 
-const JWT_SECRET = process.env.JWT_SECRET || 'seu-segredo-muito-longo-minimo-32-caracteres'
 const TOKEN_EXPIRY = '7d' // Token válido por 7 dias
 
 /**
  * Cria um token JWT para autenticação do painel
  */
+function getSecret(): string {
+  const secret = process.env.JWT_SECRET
+  if (!secret) throw new Error('JWT_SECRET não configurado')
+  return secret
+}
+
 export function createToken(admin: boolean = true): string {
-  return jwt.sign({ admin }, JWT_SECRET, {
+  return jwt.sign({ admin }, getSecret(), {
     expiresIn: TOKEN_EXPIRY,
   })
 }
@@ -24,7 +29,7 @@ export function createToken(admin: boolean = true): string {
  */
 export function verifyToken(token: string): JWTPayload | null {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload
+    const decoded = jwt.verify(token, getSecret()) as JWTPayload
     return decoded
   } catch (error) {
     return null
