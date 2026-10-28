@@ -67,6 +67,9 @@ export default function AdminNoticiasPage() {
             <p className="text-gray-600">Gerencie todas as notícias da Serviscon</p>
           </div>
           <div className="flex gap-3">
+            <Link href="/admin/candidaturas">
+              <Button variant="outline">Candidaturas</Button>
+            </Link>
             <Link href="/admin/noticias/nova">
               <Button className="bg-blue-800 text-white hover:bg-blue-900">
                 + Nova Notícia

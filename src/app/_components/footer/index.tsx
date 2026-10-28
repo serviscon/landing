@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import Link from 'next/link'
 import { FaFacebookSquare, FaWhatsapp } from 'react-icons/fa'
 import { GrLinkedin } from 'react-icons/gr'
 import { SiInstagram } from 'react-icons/si'
@@ -59,6 +60,11 @@ export function Footer() {
         <div className="mt-8 h-[1px] w-full bg-gradient-to-r from-transparent via-neutral-300 to-transparent dark:via-neutral-700" />
 
         <div className="border-gray-800 border-t pt-8 text-center">
+          <p className="mb-3">
+            <Link href="/trabalhe-conosco" className="font-semibold text-sky-300 hover:text-white">
+              Trabalhe Conosco
+            </Link>
+          </p>
           <p className="text-gray-400">&copy; {new Date().getFullYear()} Serviscon. Todos os direitos reservados.</p>
         </div>
       </div>
