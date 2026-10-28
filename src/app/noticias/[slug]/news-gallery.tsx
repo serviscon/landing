@@ -4,9 +4,10 @@ import * as Dialog from '@radix-ui/react-dialog'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
+import { type Foto, objectPosition } from '@/lib/fotos'
 
 type NewsGalleryProps = {
-  imagens: string[]
+  imagens: Foto[]
   titulo: string
 }
 
@@ -30,29 +31,31 @@ export function NewsGallery({ imagens, titulo }: NewsGalleryProps) {
         className="group relative block aspect-[16/9] w-full cursor-zoom-in overflow-hidden rounded-xl bg-gray-100 shadow-md"
       >
         <Image
-          src={capa}
+          src={capa.url}
           alt={titulo}
           fill
           priority
           sizes="(min-width: 896px) 896px, 100vw"
+          style={{ objectPosition: objectPosition(capa) }}
           className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
         />
       </button>
 
       {demais.length > 0 && (
         <div className="grid grid-cols-3 gap-3">
-          {demais.map((url, i) => (
+          {demais.map((foto, i) => (
             <button
-              key={url}
+              key={foto.url}
               type="button"
               onClick={() => setAberta(i + 1)}
               className="group relative aspect-[4/3] cursor-zoom-in overflow-hidden rounded-lg bg-gray-100"
             >
               <Image
-                src={url}
+                src={foto.url}
                 alt={`${titulo} - foto ${i + 2}`}
                 fill
                 sizes="(min-width: 896px) 290px, 33vw"
+                style={{ objectPosition: objectPosition(foto) }}
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
             </button>
@@ -78,7 +81,7 @@ export function NewsGallery({ imagens, titulo }: NewsGalleryProps) {
             {aberta !== null && (
               <div className="relative h-full max-h-[85vh] w-full max-w-5xl">
                 <Image
-                  src={imagens[aberta]}
+                  src={imagens[aberta].url}
                   alt={`${titulo} - foto ${aberta + 1}`}
                   fill
                   sizes="100vw"

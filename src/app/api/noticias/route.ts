@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { database, noticiasTable } from '@/db'
 import { verifyToken } from '@/lib/auth'
-import { normalizeImagens, validateNoticiaFields } from '@/lib/validators'
+import { normalizeFotos } from '@/lib/fotos'
+import { validateNoticiaFields } from '@/lib/validators'
 import { generateSlug, ensureUniqueSlug } from '@/lib/slug'
 import { and, desc, eq, isNull } from 'drizzle-orm'
 
@@ -51,7 +52,7 @@ export async function POST(request: NextRequest) {
 
     const data = await request.json()
 
-    const imagens = normalizeImagens(data)
+    const imagens = normalizeFotos(data)
 
     // Validar campos obrigatórios
     const validation = validateNoticiaFields(data)
@@ -75,7 +76,7 @@ export async function POST(request: NextRequest) {
         resumo: data.resumo,
         categoria: data.categoria,
         data: data.data,
-        imagemUrl: imagens[0] ?? null,
+        imagemUrl: imagens[0]?.url ?? null,
         imagens,
         conteudo: data.conteudo,
         slug: uniqueSlug,

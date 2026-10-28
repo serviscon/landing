@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { type ImageItem, ImagesField, imagesFromNoticia, uploadImages } from '../../_components/images-field'
+import type { Foto } from '@/lib/fotos'
 import type { Noticia } from '@/db'
 
 interface FormData extends Omit<Noticia, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> {}
@@ -55,9 +56,9 @@ export default function EditarNoticiaPage() {
     setErrors([])
 
     try {
-      let imagemUrls: string[]
+      let fotos: Foto[]
       try {
-        imagemUrls = await uploadImages(imagens)
+        fotos = await uploadImages(imagens)
       } catch (error) {
         setErrors([error instanceof Error ? error.message : 'Erro ao fazer upload da imagem'])
         setSaving(false)
@@ -69,7 +70,7 @@ export default function EditarNoticiaPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          imagens: imagemUrls,
+          imagens: fotos,
           status: saveAs,
         }),
       })

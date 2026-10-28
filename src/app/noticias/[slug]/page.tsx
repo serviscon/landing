@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { ArrowLeft } from 'lucide-react'
 import { database, noticiasTable } from '@/db'
 import { and, eq, isNull } from 'drizzle-orm'
-import { normalizeImagens } from '@/lib/validators'
+import { normalizeFotos } from '@/lib/fotos'
 import { NewsGallery } from './news-gallery'
 
 interface PageProps {
@@ -69,7 +69,7 @@ export default async function NoticiaPage({ params }: PageProps) {
     timeZone: 'UTC',
   })
 
-  const imagens = normalizeImagens(noticia)
+  const imagens = normalizeFotos(noticia)
 
   return (
     <>

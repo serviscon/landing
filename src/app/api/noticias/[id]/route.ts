@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { database, noticiasTable } from '@/db'
 import { verifyToken } from '@/lib/auth'
-import { normalizeImagens, validateNoticiaFields } from '@/lib/validators'
+import { normalizeFotos } from '@/lib/fotos'
+import { validateNoticiaFields } from '@/lib/validators'
 import { and, eq, isNull, or } from 'drizzle-orm'
 
 // GET - Obter notícia por ID ou slug
@@ -64,7 +65,7 @@ export async function PUT(
     const { id } = await params
     const data = await request.json()
 
-    const imagens = normalizeImagens(data)
+    const imagens = normalizeFotos(data)
 
     // Validar campos obrigatórios
     const validation = validateNoticiaFields(data)
@@ -83,7 +84,7 @@ export async function PUT(
         resumo: data.resumo,
         categoria: data.categoria,
         data: data.data,
-        imagemUrl: imagens[0] ?? null,
+        imagemUrl: imagens[0]?.url ?? null,
         imagens,
         conteudo: data.conteudo,
         status: data.status,

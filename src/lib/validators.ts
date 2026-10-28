@@ -30,22 +30,6 @@ export function validateNoticiaFields(data: any): { valid: boolean; errors: stri
   }
 }
 
-export const MAX_IMAGENS = 4
-
-/**
- * Normaliza a lista de fotos recebida do painel (até 4 URLs).
- * Notícias antigas só têm `imagemUrl`, que vira uma lista de um item.
- */
-export function normalizeImagens(data: { imagens?: unknown; imagemUrl?: unknown }): string[] {
-  const imagens = Array.isArray(data.imagens)
-    ? data.imagens.filter((url): url is string => typeof url === 'string' && url.trim() !== '')
-    : typeof data.imagemUrl === 'string' && data.imagemUrl
-      ? [data.imagemUrl]
-      : []
-
-  return imagens.slice(0, MAX_IMAGENS)
-}
-
 /**
  * Valida o arquivo de imagem
  */

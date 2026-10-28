@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import type { Noticia } from '@/db'
+import { normalizeFotos, objectPosition } from '@/lib/fotos'
 
 // A data é salva como YYYY-MM-DD; formatamos em UTC para não "voltar" um dia no fuso do Brasil
 function formatDate(data: string) {
@@ -29,7 +30,9 @@ function NewsMeta({ noticia }: { noticia: Noticia }) {
 }
 
 function NewsImage({ noticia, sizes }: { noticia: Noticia; sizes: string }) {
-  if (!noticia.imagemUrl) {
+  const [capa] = normalizeFotos(noticia)
+
+  if (!capa) {
     return (
       <div className="flex h-full items-center justify-center bg-gradient-to-br from-blue-100 to-sky-50">
         <span className="font-semibold text-blue-300">Serviscon</span>
@@ -39,10 +42,11 @@ function NewsImage({ noticia, sizes }: { noticia: Noticia; sizes: string }) {
 
   return (
     <Image
-      src={noticia.imagemUrl}
+      src={capa.url}
       alt={noticia.titulo}
       fill
       sizes={sizes}
+      style={{ objectPosition: objectPosition(capa) }}
       className="object-cover transition-transform duration-500 group-hover:scale-105"
     />
   )

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { type ImageItem, ImagesField, uploadImages } from '../_components/images-field'
+import type { Foto } from '@/lib/fotos'
 
 interface FormData {
   titulo: string
@@ -44,9 +45,9 @@ export default function NovaNoticiaPage() {
     setErrors([])
 
     try {
-      let imagemUrls: string[]
+      let fotos: Foto[]
       try {
-        imagemUrls = await uploadImages(imagens)
+        fotos = await uploadImages(imagens)
       } catch (error) {
         setErrors([error instanceof Error ? error.message : 'Erro ao fazer upload da imagem'])
         setLoading(false)
@@ -59,7 +60,7 @@ export default function NovaNoticiaPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          imagens: imagemUrls,
+          imagens: fotos,
           status: saveAs,
         }),
       })
