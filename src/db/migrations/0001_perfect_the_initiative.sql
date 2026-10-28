@@ -1,0 +1,1 @@
+ALTER TABLE `noticias` ADD `imagens` text;

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { database, noticiasTable } from '@/db'
 import { verifyToken } from '@/lib/auth'
+import { normalizeFotos } from '@/lib/fotos'
 import { validateNoticiaFields } from '@/lib/validators'
 import { generateSlug, ensureUniqueSlug } from '@/lib/slug'
-import { desc, eq, isNull } from 'drizzle-orm'
+import { and, desc, eq, isNull } from 'drizzle-orm'
 
 // GET - Listar notícias públicas (apenas publicadas)
 export async function GET(request: NextRequest) {
@@ -22,11 +23,7 @@ export async function GET(request: NextRequest) {
       : database
           .select()
           .from(noticiasTable)
-          .where(
-            isAdmin
-              ? isNull(noticiasTable.deletedAt)
-              : eq(noticiasTable.status, 'publicado') && isNull(noticiasTable.deletedAt)
-          )
+          .where(and(eq(noticiasTable.status, 'publicado'), isNull(noticiasTable.deletedAt)))
           .orderBy(desc(noticiasTable.data))
 
     const noticias = await query.all()
@@ -55,6 +52,8 @@ export async function POST(request: NextRequest) {
 
     const data = await request.json()
 
+    const imagens = normalizeFotos(data)
+
     // Validar campos obrigatórios
     const validation = validateNoticiaFields(data)
     if (!validation.valid) {
@@ -77,7 +76,8 @@ export async function POST(request: NextRequest) {
         resumo: data.resumo,
         categoria: data.categoria,
         data: data.data,
-        imagemUrl: data.imagemUrl || null,
+        imagemUrl: imagens[0]?.url ?? null,
+        imagens,
         conteudo: data.conteudo,
         slug: uniqueSlug,
         status: data.status || 'rascunho',

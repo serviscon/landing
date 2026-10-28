@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import type { Noticia } from '@/db'
+import { normalizeFotos, objectPosition } from '@/lib/fotos'
 
 interface NewsCardProps {
   noticia: Noticia
@@ -15,18 +16,22 @@ function NewsCard({ noticia }: NewsCardProps) {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+    timeZone: 'UTC',
   })
+
+  const [capa] = normalizeFotos(noticia)
 
   return (
     <Link href={`/noticias/${noticia.slug}`}>
       <article className="group overflow-hidden rounded-xl border border-blue-100 bg-white shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
         {/* Imagem */}
         <div className="relative h-48 w-full overflow-hidden bg-gradient-to-br from-blue-100 to-blue-50">
-          {noticia.imagemUrl ? (
+          {capa ? (
             <Image
-              src={noticia.imagemUrl}
+              src={capa.url}
               alt={noticia.titulo}
               fill
+              style={{ objectPosition: objectPosition(capa) }}
               className="object-cover transition-transform duration-500 group-hover:scale-110"
             />
           ) : (

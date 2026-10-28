@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import Image from 'next/image'
+import { type ImageItem, ImagesField, imagesFromNoticia, uploadImages } from '../../_components/images-field'
+import type { Foto } from '@/lib/fotos'
 import type { Noticia } from '@/db'
 
 interface FormData extends Omit<Noticia, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'> {}
@@ -24,8 +25,7 @@ export default function EditarNoticiaPage() {
   const id = params.id as string
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [preview, setPreview] = useState('')
-  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagens, setImagens] = useState<ImageItem[]>([])
   const [errors, setErrors] = useState<string[]>([])
   const [formData, setFormData] = useState<FormData | null>(null)
 
@@ -36,7 +36,7 @@ export default function EditarNoticiaPage() {
         if (!response.ok) throw new Error('Notícia não encontrada')
         const data = await response.json()
         setFormData(data)
-        if (data.imagemUrl) setPreview(data.imagemUrl)
+        setImagens(imagesFromNoticia(data))
       } catch (error) {
         alert('Erro ao carregar notícia')
         router.back()
@@ -48,29 +48,6 @@ export default function EditarNoticiaPage() {
     fetchNoticia()
   }, [id])
 
-  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    if (file.size > 5 * 1024 * 1024) {
-      alert('Imagem deve ter no máximo 5MB')
-      return
-    }
-
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-      alert('Apenas JPEG, PNG e WebP são permitidos')
-      return
-    }
-
-    setImageFile(file)
-
-    const reader = new FileReader()
-    reader.onload = e => {
-      setPreview(e.target?.result as string)
-    }
-    reader.readAsDataURL(file)
-  }
-
   async function handleSubmit(e: React.FormEvent, saveAs: 'rascunho' | 'publicado') {
     e.preventDefault()
     if (!formData) return
@@ -79,26 +56,13 @@ export default function EditarNoticiaPage() {
     setErrors([])
 
     try {
-      let imagemUrl = formData.imagemUrl
-
-      if (imageFile) {
-        const uploadFormData = new FormData()
-        uploadFormData.append('file', imageFile)
-
-        const uploadResponse = await fetch('/api/upload', {
-          method: 'POST',
-          body: uploadFormData,
-        })
-
-        if (!uploadResponse.ok) {
-          const error = await uploadResponse.json()
-          setErrors([error.error || 'Erro ao fazer upload da imagem'])
-          setSaving(false)
-          return
-        }
-
-        const uploadData = await uploadResponse.json()
-        imagemUrl = uploadData.url
+      let fotos: Foto[]
+      try {
+        fotos = await uploadImages(imagens)
+      } catch (error) {
+        setErrors([error instanceof Error ? error.message : 'Erro ao fazer upload da imagem'])
+        setSaving(false)
+        return
       }
 
       const response = await fetch(`/api/noticias/${id}`, {
@@ -106,7 +70,7 @@ export default function EditarNoticiaPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          imagemUrl,
+          imagens: fotos,
           status: saveAs,
         }),
       })
@@ -217,29 +181,7 @@ export default function EditarNoticiaPage() {
             </div>
           </div>
 
-          <div>
-            <label className="block font-semibold text-gray-700 text-sm">
-              IMAGEM DE CAPA
-            </label>
-            <input
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              onChange={handleImageUpload}
-              className="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-blue-800 file:px-4 file:py-2 file:font-semibold file:text-white"
-            />
-            {preview && (
-              <div className="mt-4">
-                <p className="mb-2 text-sm text-gray-600">Preview da imagem:</p>
-                <Image
-                  src={preview}
-                  alt="Preview"
-                  width={400}
-                  height={200}
-                  className="rounded-lg"
-                />
-              </div>
-            )}
-          </div>
+          <ImagesField value={imagens} onChange={setImagens} disabled={saving} />
 
           <div>
             <label className="block font-semibold text-gray-700 text-sm">

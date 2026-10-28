@@ -1,11 +1,12 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeft } from 'lucide-react'
 import { database, noticiasTable } from '@/db'
-import { eq, isNull } from 'drizzle-orm'
+import { and, eq, isNull } from 'drizzle-orm'
+import { normalizeFotos } from '@/lib/fotos'
+import { NewsGallery } from './news-gallery'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -17,7 +18,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const noticia = await database
     .select()
     .from(noticiasTable)
-    .where(eq(noticiasTable.slug, slug) && eq(noticiasTable.status, 'publicado') && isNull(noticiasTable.deletedAt))
+    .where(and(eq(noticiasTable.slug, slug), eq(noticiasTable.status, 'publicado'), isNull(noticiasTable.deletedAt)))
     .limit(1)
     .then(results => results[0])
 
@@ -36,7 +37,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       images: noticia.imagemUrl
         ? [
             {
-              url: `https://landing.serviscon.com.br${noticia.imagemUrl}`,
+              url: new URL(noticia.imagemUrl, 'https://landing.serviscon.com.br').toString(),
               width: 1200,
               height: 630,
               alt: noticia.titulo,
@@ -53,7 +54,7 @@ export default async function NoticiaPage({ params }: PageProps) {
   const noticia = await database
     .select()
     .from(noticiasTable)
-    .where(eq(noticiasTable.slug, slug) && eq(noticiasTable.status, 'publicado') && isNull(noticiasTable.deletedAt))
+    .where(and(eq(noticiasTable.slug, slug), eq(noticiasTable.status, 'publicado'), isNull(noticiasTable.deletedAt)))
     .limit(1)
     .then(results => results[0])
 
@@ -65,7 +66,10 @@ export default async function NoticiaPage({ params }: PageProps) {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+    timeZone: 'UTC',
   })
+
+  const imagens = normalizeFotos(noticia)
 
   return (
     <>
@@ -94,19 +98,8 @@ export default async function NoticiaPage({ params }: PageProps) {
             <p className="text-xl text-gray-600">{noticia.resumo}</p>
           </header>
 
-          {/* Imagem Principal */}
-          {noticia.imagemUrl && (
-            <div className="mb-12 overflow-hidden rounded-xl shadow-lg">
-              <Image
-                src={noticia.imagemUrl}
-                alt={noticia.titulo}
-                width={1200}
-                height={600}
-                className="h-auto w-full object-cover"
-                priority
-              />
-            </div>
-          )}
+          {/* Fotos */}
+          <NewsGallery imagens={imagens} titulo={noticia.titulo} />
 
           {/* Conteúdo */}
           <div className="prose prose-lg max-w-4xl">

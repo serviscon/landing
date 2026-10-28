@@ -1,66 +1,94 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { ArrowRight } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import type { Noticia } from '@/db'
+import { normalizeFotos, objectPosition } from '@/lib/fotos'
 
-interface NewsCardProps {
-  noticia: Noticia
-}
-
-function NewsCard({ noticia }: NewsCardProps) {
-  const formattedDate = new Date(noticia.data).toLocaleDateString('pt-BR', {
+// A data é salva como YYYY-MM-DD; formatamos em UTC para não "voltar" um dia no fuso do Brasil
+function formatDate(data: string) {
+  return new Date(data).toLocaleDateString('pt-BR', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+    timeZone: 'UTC',
   })
+}
+
+function NewsMeta({ noticia }: { noticia: Noticia }) {
+  return (
+    <div className="flex flex-wrap items-center gap-3">
+      <Badge className="bg-blue-50 text-blue-800 hover:bg-blue-50">{noticia.categoria}</Badge>
+      <time dateTime={noticia.data} className="text-gray-500 text-xs">
+        {formatDate(noticia.data)}
+      </time>
+    </div>
+  )
+}
+
+function NewsImage({ noticia, sizes }: { noticia: Noticia; sizes: string }) {
+  const [capa] = normalizeFotos(noticia)
+
+  if (!capa) {
+    return (
+      <div className="flex h-full items-center justify-center bg-gradient-to-br from-blue-100 to-sky-50">
+        <span className="font-semibold text-blue-300">Serviscon</span>
+      </div>
+    )
+  }
 
   return (
-    <Link href={`/noticias/${noticia.slug}`}>
-      <article className="group overflow-hidden rounded-xl border border-blue-100 bg-white shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-        {/* Imagem */}
-        <div className="relative h-48 w-full overflow-hidden bg-gradient-to-br from-blue-100 to-blue-50">
-          {noticia.imagemUrl ? (
-            <Image
-              src={noticia.imagemUrl}
-              alt={noticia.titulo}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-110"
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center">
-              <span className="text-gray-400">Sem imagem</span>
-            </div>
-          )}
+    <Image
+      src={capa.url}
+      alt={noticia.titulo}
+      fill
+      sizes={sizes}
+      style={{ objectPosition: objectPosition(capa) }}
+      className="object-cover transition-transform duration-500 group-hover:scale-105"
+    />
+  )
+}
+
+function FeaturedNews({ noticia }: { noticia: Noticia }) {
+  return (
+    <Link href={`/noticias/${noticia.slug}`} className="group block">
+      <article className="grid items-center gap-6 md:grid-cols-[320px_1fr] md:gap-8">
+        <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl bg-blue-50 shadow-sm md:aspect-[15/8]">
+          <NewsImage noticia={noticia} sizes="(min-width: 768px) 320px, 100vw" />
         </div>
 
-        {/* Conteúdo */}
-        <div className="p-6">
-          {/* Categoria e Data */}
-          <div className="mb-3 flex items-center justify-between gap-2">
-            <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
-              {noticia.categoria}
-            </Badge>
-            <span className="text-xs text-gray-500">{formattedDate}</span>
-          </div>
-
-          {/* Título */}
-          <h3 className="mb-2 line-clamp-2 font-bold text-lg text-gray-900 transition-colors group-hover:text-blue-800">
+        <div className="space-y-3">
+          <NewsMeta noticia={noticia} />
+          <h3 className="font-semibold text-gray-900 text-xl leading-snug transition-colors group-hover:text-blue-800 lg:text-2xl">
             {noticia.titulo}
           </h3>
+          <p className="line-clamp-3 max-w-3xl text-gray-600 leading-relaxed">{noticia.resumo}</p>
+          <span className="inline-flex items-center gap-1.5 font-medium text-blue-700 text-sm">
+            Ler notícia completa
+            <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+          </span>
+        </div>
+      </article>
+    </Link>
+  )
+}
 
-          {/* Resumo */}
-          <p className="mb-4 line-clamp-2 text-sm text-gray-600">
-            {noticia.resumo}
-          </p>
+function CompactNews({ noticia }: { noticia: Noticia }) {
+  return (
+    <Link href={`/noticias/${noticia.slug}`} className="group block">
+      <article className="flex gap-4">
+        <div className="relative aspect-square w-24 shrink-0 overflow-hidden rounded-lg bg-blue-50">
+          <NewsImage noticia={noticia} sizes="96px" />
+        </div>
 
-          {/* Botão */}
-          <button className="inline-flex items-center font-semibold text-blue-800 transition-all group-hover:gap-2">
-            LEIA MAIS
-            <span className="ml-2 transition-transform group-hover:translate-x-1">→</span>
-          </button>
+        <div className="min-w-0 space-y-1.5">
+          <NewsMeta noticia={noticia} />
+          <h4 className="line-clamp-3 font-semibold text-gray-900 text-sm leading-snug transition-colors group-hover:text-blue-800">
+            {noticia.titulo}
+          </h4>
         </div>
       </article>
     </Link>
@@ -75,8 +103,8 @@ export function NoticiasSection() {
     async function fetchNoticias() {
       try {
         const response = await fetch('/api/noticias/recentes')
-        const data = await response.json()
-        setNoticias(data)
+        if (!response.ok) throw new Error(`HTTP ${response.status}`)
+        setNoticias(await response.json())
       } catch (error) {
         console.error('Erro ao carregar notícias:', error)
       } finally {
@@ -87,54 +115,50 @@ export function NoticiasSection() {
     fetchNoticias()
   }, [])
 
-  if (loading) {
-    return (
-      <section id="noticias" className="bg-white py-20">
-        <div className="container mx-auto px-4 text-center">
-          <div className="h-40 animate-pulse rounded-lg bg-gray-200" />
-        </div>
-      </section>
-    )
-  }
+  // Sem notícias publicadas, a seção não aparece na home
+  if (!loading && noticias.length === 0) return null
+
+  const [destaque, ...demais] = noticias
 
   return (
-    <section id="noticias" className="bg-gradient-to-br from-blue-50 to-white py-20">
+    <section id="noticias" className="scroll-mt-24 border-blue-100/60 border-y bg-white py-10 lg:py-12">
       <div className="container mx-auto px-4">
-        {/* Header */}
-        <div className="mb-12 text-center">
-          <Badge className="mb-4 bg-blue-100 text-blue-800 hover:bg-blue-100">📰 Notícias</Badge>
-          <h2 className="mb-3 font-bold text-4xl text-gray-900 lg:text-5xl">
-            Acontece na Serviscon
+        <header className="mb-6 flex items-center justify-between gap-4">
+          <h2 className="flex items-center gap-3 font-semibold text-2xl text-gray-900">
+            <span className="h-7 w-1.5 rounded-full bg-blue-700" aria-hidden />
+            Últimas Notícias
           </h2>
-          <p className="mx-auto max-w-2xl text-gray-600 text-lg">
-            Acompanhe ações, projetos, eventos e iniciativas que fazem parte da nossa trajetória.
-          </p>
-        </div>
+          <Link
+            href="/noticias"
+            className="group inline-flex shrink-0 items-center gap-1.5 font-medium text-blue-700 text-sm hover:text-blue-900"
+          >
+            Ver todas as notícias
+            <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+          </Link>
+        </header>
 
-        {/* Grid de Notícias */}
-        {noticias.length > 0 ? (
-          <>
-            <div className="mb-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {noticias.map(noticia => (
-                <NewsCard key={noticia.id} noticia={noticia} />
-              ))}
+        {loading ? (
+          <div className="grid gap-6 md:grid-cols-[320px_1fr]">
+            <div className="aspect-[15/8] animate-pulse rounded-xl bg-gray-100" />
+            <div className="space-y-3 py-2">
+              <div className="h-5 w-40 animate-pulse rounded bg-gray-100" />
+              <div className="h-7 w-3/4 animate-pulse rounded bg-gray-100" />
+              <div className="h-4 w-full animate-pulse rounded bg-gray-100" />
+              <div className="h-4 w-2/3 animate-pulse rounded bg-gray-100" />
             </div>
-
-            {/* Botão Ver Todas */}
-            <div className="text-center">
-              <Link
-                href="/noticias"
-                className="inline-flex items-center rounded-lg bg-blue-800 px-8 py-3 font-semibold text-white transition-all duration-300 hover:bg-blue-900 hover:shadow-lg"
-              >
-                Ver Todas as Notícias
-                <span className="ml-2">→</span>
-              </Link>
-            </div>
-          </>
-        ) : (
-          <div className="rounded-lg border border-gray-200 bg-white p-12 text-center">
-            <p className="text-gray-500">Nenhuma notícia publicada ainda.</p>
           </div>
+        ) : (
+          <>
+            <FeaturedNews noticia={destaque} />
+
+            {demais.length > 0 && (
+              <div className="mt-8 grid gap-6 border-gray-100 border-t pt-8 md:grid-cols-2 lg:grid-cols-3">
+                {demais.map(noticia => (
+                  <CompactNews key={noticia.id} noticia={noticia} />
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
     </section>

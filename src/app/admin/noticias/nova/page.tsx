@@ -3,14 +3,14 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import Image from 'next/image'
+import { type ImageItem, ImagesField, uploadImages } from '../_components/images-field'
+import type { Foto } from '@/lib/fotos'
 
 interface FormData {
   titulo: string
   resumo: string
   categoria: string
   data: string
-  imagemUrl: string
   conteudo: string
   status: 'rascunho' | 'publicado'
 }
@@ -28,43 +28,16 @@ const CATEGORIAS = [
 export default function NovaNoticiaPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const [preview, setPreview] = useState('')
-  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [imagens, setImagens] = useState<ImageItem[]>([])
   const [errors, setErrors] = useState<string[]>([])
   const [formData, setFormData] = useState<FormData>({
     titulo: '',
     resumo: '',
     categoria: 'Institucional',
     data: new Date().toISOString().split('T')[0],
-    imagemUrl: '',
     conteudo: '',
     status: 'rascunho',
   })
-
-  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    // Validar arquivo
-    if (file.size > 5 * 1024 * 1024) {
-      alert('Imagem deve ter no máximo 5MB')
-      return
-    }
-
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-      alert('Apenas JPEG, PNG e WebP são permitidos')
-      return
-    }
-
-    setImageFile(file)
-
-    // Mostrar preview
-    const reader = new FileReader()
-    reader.onload = e => {
-      setPreview(e.target?.result as string)
-    }
-    reader.readAsDataURL(file)
-  }
 
   async function handleSubmit(e: React.FormEvent, saveAs: 'rascunho' | 'publicado') {
     e.preventDefault()
@@ -72,27 +45,13 @@ export default function NovaNoticiaPage() {
     setErrors([])
 
     try {
-      let imagemUrl = formData.imagemUrl
-
-      // Upload de imagem se houver
-      if (imageFile) {
-        const uploadFormData = new FormData()
-        uploadFormData.append('file', imageFile)
-
-        const uploadResponse = await fetch('/api/upload', {
-          method: 'POST',
-          body: uploadFormData,
-        })
-
-        if (!uploadResponse.ok) {
-          const error = await uploadResponse.json()
-          setErrors([error.error || 'Erro ao fazer upload da imagem'])
-          setLoading(false)
-          return
-        }
-
-        const uploadData = await uploadResponse.json()
-        imagemUrl = uploadData.url
+      let fotos: Foto[]
+      try {
+        fotos = await uploadImages(imagens)
+      } catch (error) {
+        setErrors([error instanceof Error ? error.message : 'Erro ao fazer upload da imagem'])
+        setLoading(false)
+        return
       }
 
       // Criar notícia
@@ -101,7 +60,7 @@ export default function NovaNoticiaPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          imagemUrl,
+          imagens: fotos,
           status: saveAs,
         }),
       })
@@ -207,31 +166,8 @@ export default function NovaNoticiaPage() {
             </div>
           </div>
 
-          {/* Imagem */}
-          <div>
-            <label htmlFor="imagem" className="block font-semibold text-gray-700 text-sm">
-              IMAGEM DE CAPA
-            </label>
-            <input
-              id="imagem"
-              type="file"
-              accept="image/jpeg,image/png,image/webp"
-              onChange={handleImageUpload}
-              className="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-blue-800 file:px-4 file:py-2 file:font-semibold file:text-white"
-            />
-            {preview && (
-              <div className="mt-4">
-                <p className="mb-2 text-sm text-gray-600">Preview da imagem:</p>
-                <Image
-                  src={preview}
-                  alt="Preview"
-                  width={400}
-                  height={200}
-                  className="rounded-lg"
-                />
-              </div>
-            )}
-          </div>
+          {/* Fotos */}
+          <ImagesField value={imagens} onChange={setImagens} disabled={loading} />
 
           {/* Conteúdo */}
           <div>

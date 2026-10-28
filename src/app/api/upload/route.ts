@@ -1,3 +1,4 @@
+import { put } from '@vercel/blob'
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyToken } from '@/lib/auth'
 import { validateImageFile } from '@/lib/validators'
@@ -35,29 +36,27 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Converter arquivo para buffer
-    const buffer = Buffer.from(await file.arrayBuffer())
-
     // Gerar nome único para o arquivo
     const timestamp = new Date().toISOString().split('T')[0]
     const randomSuffix = Math.random().toString(36).substring(2, 8)
     const fileExtension = file.name.split('.').pop()
     const fileName = `${timestamp}-${randomSuffix}.${fileExtension}`
 
-    // Caminho do arquivo
-    const uploadDir = path.join(process.cwd(), 'public', 'noticias')
-    const filePath = path.join(uploadDir, fileName)
+    let publicUrl: string
 
-    // Criar diretório se não existir
-    if (!existsSync(uploadDir)) {
-      await mkdir(uploadDir, { recursive: true })
+    if (process.env.BLOB_READ_WRITE_TOKEN) {
+      // Produção: salva no Vercel Blob (o disco da Vercel não é persistente)
+      const blob = await put(`noticias/${fileName}`, file, { access: 'public', contentType: file.type })
+      publicUrl = blob.url
+    } else {
+      // Desenvolvimento: salva em public/noticias
+      const uploadDir = path.join(process.cwd(), 'public', 'noticias')
+      if (!existsSync(uploadDir)) {
+        await mkdir(uploadDir, { recursive: true })
+      }
+      await writeFile(path.join(uploadDir, fileName), Buffer.from(await file.arrayBuffer()))
+      publicUrl = `/noticias/${fileName}`
     }
-
-    // Salvar arquivo
-    await writeFile(filePath, buffer)
-
-    // Retornar URL pública
-    const publicUrl = `/noticias/${fileName}`
 
     return NextResponse.json(
       { url: publicUrl, fileName, message: 'Imagem enviada com sucesso' },

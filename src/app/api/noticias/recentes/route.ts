@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { database, noticiasTable } from '@/db'
-import { desc, eq, isNull } from 'drizzle-orm'
+import { and, desc, eq, isNull } from 'drizzle-orm'
 
-// GET - Obter 3 notícias mais recentes (apenas publicadas)
+// GET - Obter 4 notícias mais recentes (1 destaque + 3) (apenas publicadas)
 export async function GET(request: NextRequest) {
   try {
     const noticias = await database
       .select()
       .from(noticiasTable)
-      .where(eq(noticiasTable.status, 'publicado') && isNull(noticiasTable.deletedAt))
+      .where(and(eq(noticiasTable.status, 'publicado'), isNull(noticiasTable.deletedAt)))
       .orderBy(desc(noticiasTable.data))
-      .limit(3)
+      .limit(4)
       .all()
 
     return NextResponse.json(noticias, { status: 200 })
