@@ -15,12 +15,12 @@ export function Header() {
     <section className="fixed top-0 right-0 left-0 z-50 w-full border-white border-b-2 bg-gradient-to-r from-blue-800 to-blue-100 p-2 shadow-md shadow-muted backdrop-blur-md">
       <div className="container mx-auto animate-fade-in">
         <div className="flex items-center justify-between">
-          <Link href="#home">
+          <Link href="/#home" className="shrink-0">
             <Image src="/serviscon-logo.png" alt="Logo" width={170} height={150} priority quality={100} />
           </Link>
 
           {/* Header em modo Desktop */}
-          <nav className="hidden items-center space-x-4 lg:flex">
+          <nav className="hidden items-center space-x-1 lg:flex xl:space-x-4">
             <NavItems setOpen={setOpen} />
           </nav>
 

@@ -40,7 +40,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-800 to-blue-100 px-4">
       <div className="w-full max-w-md rounded-xl bg-white p-8 shadow-lg">
         <div className="mb-8 text-center">
-          <h1 className="mb-2 font-bold text-3xl text-gray-900">Painel de Notícias</h1>
+          <h1 className="mb-2 font-bold text-3xl text-gray-900">Painel Serviscon</h1>
           <p className="text-gray-600">Autentique-se para continuar</p>
         </div>
 

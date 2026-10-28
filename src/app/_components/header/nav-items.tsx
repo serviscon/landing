@@ -13,12 +13,13 @@ type NavItemsProps = {
 
 export function NavItems({ setOpen }: NavItemsProps) {
   const navItems = [
-    { label: 'Início', href: '#home' },
-    { label: 'Parceiros', href: '#partners' },
-    { label: 'Segmentos', href: '#segments' },
-    { label: 'Serviços', href: '#services' },
-    { label: 'Notícias', href: '#noticias' },
-    { label: 'Contato', href: '#contacts' },
+    { label: 'Início', href: '/#home' },
+    { label: 'Parceiros', href: '/#partners' },
+    { label: 'Segmentos', href: '/#segments' },
+    { label: 'Serviços', href: '/#services' },
+    { label: 'Notícias', href: '/#noticias' },
+    { label: 'Contato', href: '/#contacts' },
+    { label: 'Trabalhe Conosco', href: '/trabalhe-conosco' },
   ]
 
   return (
@@ -39,7 +40,7 @@ export function NavItems({ setOpen }: NavItemsProps) {
           {/* Desktop: só texto com hover branco */}
           <Link
             href={item.href}
-            className="hidden items-center rounded-xl px-4 py-2 font-semibold text-blue-900 transition-all duration-500 hover:bg-white/80 hover:text-blue-950 hover:shadow-sm lg:inline-flex"
+            className="hidden items-center whitespace-nowrap rounded-xl px-2 py-2 font-semibold text-blue-900 xl:px-4 transition-all duration-500 hover:bg-white/80 hover:text-blue-950 hover:shadow-sm lg:inline-flex"
           >
             {item.label}
           </Link>

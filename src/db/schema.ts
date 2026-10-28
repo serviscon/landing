@@ -24,3 +24,22 @@ export const noticiasTable = sqliteTable('noticias', {
 
 export type Noticia = typeof noticiasTable.$inferSelect
 export type NoticiaInsert = typeof noticiasTable.$inferInsert
+
+export const candidaturasTable = sqliteTable('candidaturas', {
+  id: integer().primaryKey({ autoIncrement: true }),
+  area: text().notNull(), // id da vaga em src/lib/vagas.ts
+  nome: text().notNull(),
+  email: text().notNull(),
+  telefone: text().notNull(),
+  cidade: text().notNull(),
+  respostas: text({ mode: 'json' }).$type<Record<string, string>>(), // Campos específicos da área: { label: resposta }
+  observacoes: text(),
+  curriculoUrl: text().notNull(),
+  curriculoNome: text().notNull(),
+  status: text().default('novo').notNull(), // 'novo' ou 'analisado'
+  createdAt: text()
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+})
+
+export type Candidatura = typeof candidaturasTable.$inferSelect

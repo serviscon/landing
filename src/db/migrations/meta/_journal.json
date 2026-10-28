@@ -15,6 +15,13 @@
       "when": 1793192434214,
       "tag": "0001_perfect_the_initiative",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1793196595594,
+      "tag": "0002_odd_thor",
+      "breakpoints": true
     }
   ]
 }
