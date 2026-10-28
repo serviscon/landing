@@ -30,12 +30,35 @@ function nomeCidade(cidade: string) {
     .trim()
 }
 
-function chaveCidade(cidade: string) {
-  return nomeCidade(cidade)
+// Ignora acentos, maiúsculas e espaços extras: "Cohama", "COHAMA " e "cohama" viram a mesma chave
+function chaveTexto(texto: string) {
+  return texto
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
     .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function chaveCidade(cidade: string) {
+  return chaveTexto(nomeCidade(cidade))
+}
+
+type OpcaoFiltro = { chave: string; nome: string; total: number }
+
+// Uma opção por chave, com a grafia mais usada e a quantidade, em ordem alfabética
+function opcoesFiltro(valores: { chave: string; nome: string }[]): OpcaoFiltro[] {
+  const grupos: Record<string, Record<string, number>> = {}
+  for (const { chave, nome } of valores) {
+    grupos[chave] ??= {}
+    grupos[chave][nome] = (grupos[chave][nome] ?? 0) + 1
+  }
+  return Object.entries(grupos)
+    .map(([chave, grafias]) => {
+      const ordenadas = Object.entries(grafias).sort((a, b) => b[1] - a[1])
+      return { chave, nome: ordenadas[0][0], total: ordenadas.reduce((soma, [, n]) => soma + n, 0) }
+    })
+    .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'))
 }
 
 function whatsappUrl(telefone: string) {
@@ -50,6 +73,7 @@ export default function AdminCandidaturasPage() {
   const [area, setArea] = useState('')
   const [status, setStatus] = useState<'' | 'novo' | 'analisado'>('')
   const [cidade, setCidade] = useState('')
+  const [bairro, setBairro] = useState('')
   const [ocupado, setOcupado] = useState<number | null>(null)
 
   useEffect(() => {
@@ -109,27 +133,21 @@ export default function AdminCandidaturasPage() {
     router.push('/admin/login')
   }
 
-  // Opções do filtro de local: uma por cidade, com a grafia mais usada e a quantidade
-  const cidades = Object.entries(
-    candidaturas.reduce<Record<string, Record<string, number>>>((grupos, c) => {
-      const chave = chaveCidade(c.cidade)
-      const nome = nomeCidade(c.cidade) || c.cidade
-      grupos[chave] ??= {}
-      grupos[chave][nome] = (grupos[chave][nome] ?? 0) + 1
-      return grupos
-    }, {})
+  const cidades = opcoesFiltro(candidaturas.map(c => ({ chave: chaveCidade(c.cidade), nome: nomeCidade(c.cidade) || c.cidade })))
+
+  // Bairros da cidade selecionada (ou de todas)
+  const bairros = opcoesFiltro(
+    candidaturas
+      .filter(c => c.bairro?.trim() && (!cidade || chaveCidade(c.cidade) === cidade))
+      .map(c => ({ chave: chaveTexto(c.bairro ?? ''), nome: (c.bairro ?? '').trim() }))
   )
-    .map(([chave, grafias]) => {
-      const ordenadas = Object.entries(grafias).sort((a, b) => b[1] - a[1])
-      return { chave, nome: ordenadas[0][0], total: ordenadas.reduce((soma, [, n]) => soma + n, 0) }
-    })
-    .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'))
 
   const filtradas = candidaturas.filter(
     c =>
       (!area || c.area === area) &&
       (!status || c.status === status) &&
-      (!cidade || chaveCidade(c.cidade) === cidade)
+      (!cidade || chaveCidade(c.cidade) === cidade) &&
+      (!bairro || chaveTexto(c.bairro ?? '') === bairro)
   )
   const novas = candidaturas.filter(c => c.status === 'novo').length
 
@@ -182,7 +200,10 @@ export default function AdminCandidaturasPage() {
           </select>
           <select
             value={cidade}
-            onChange={e => setCidade(e.target.value)}
+            onChange={e => {
+              setCidade(e.target.value)
+              setBairro('')
+            }}
             aria-label="Filtrar por local"
             className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
           >
@@ -190,6 +211,20 @@ export default function AdminCandidaturasPage() {
             {cidades.map(c => (
               <option key={c.chave} value={c.chave}>
                 {c.nome} ({c.total})
+              </option>
+            ))}
+          </select>
+          <select
+            value={bairro}
+            onChange={e => setBairro(e.target.value)}
+            aria-label="Filtrar por bairro"
+            disabled={bairros.length === 0}
+            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm disabled:opacity-50"
+          >
+            <option value="">Todos os bairros</option>
+            {bairros.map(b => (
+              <option key={b.chave} value={b.chave}>
+                {b.nome} ({b.total})
               </option>
             ))}
           </select>
@@ -225,7 +260,8 @@ export default function AdminCandidaturasPage() {
                         </Badge>
                       </div>
                       <p className="text-gray-600 text-sm">
-                        {vaga ? `${vaga.icone} ${vaga.titulo}` : candidatura.area} · {candidatura.cidade} · enviada em{' '}
+                        {vaga ? `${vaga.icone} ${vaga.titulo}` : candidatura.area} ·{' '}
+                        {candidatura.bairro ? `${candidatura.bairro}, ${candidatura.cidade}` : candidatura.cidade} · enviada em{' '}
                         {formatDateTime(candidatura.createdAt)}
                       </p>
                     </div>

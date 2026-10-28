@@ -196,6 +196,12 @@ function FormularioVaga({ vaga }: { vaga: Vaga }) {
                 </label>
                 <input id={`${vaga.id}-cidade`} name="cidade" required placeholder="Ex.: São Luís – MA" className={inputClass} />
               </div>
+              <div className="flex flex-col gap-1.5">
+                <label htmlFor={`${vaga.id}-bairro`} className={labelClass}>
+                  Bairro <Required />
+                </label>
+                <input id={`${vaga.id}-bairro`} name="bairro" required placeholder="Ex.: Cohama" className={inputClass} />
+              </div>
 
               {vaga.campos.map(campo => (
                 <div key={campo.id} className="flex flex-col gap-1.5">

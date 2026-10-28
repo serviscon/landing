@@ -1,0 +1,1 @@
+ALTER TABLE `candidaturas` ADD `bairro` text;

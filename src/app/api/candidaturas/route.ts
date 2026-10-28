@@ -26,6 +26,7 @@ export async function POST(request: NextRequest) {
     const email = texto(formData, 'email')
     const telefone = texto(formData, 'telefone', 40)
     const cidade = texto(formData, 'cidade')
+    const bairro = texto(formData, 'bairro')
     const observacoes = texto(formData, 'observacoes', 2000)
     const curriculo = formData.get('curriculo')
 
@@ -35,6 +36,7 @@ export async function POST(request: NextRequest) {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.push('E-mail inválido')
     if (telefone.replace(/\D/g, '').length < 10) errors.push('Telefone inválido')
     if (!cidade) errors.push('Cidade é obrigatória')
+    if (!bairro) errors.push('Bairro é obrigatório')
 
     if (!(curriculo instanceof File) || curriculo.size === 0) {
       errors.push('Envie seu currículo')
@@ -65,6 +67,7 @@ export async function POST(request: NextRequest) {
         email,
         telefone,
         cidade,
+        bairro,
         respostas,
         observacoes: observacoes || null,
         curriculoUrl,
@@ -81,6 +84,7 @@ export async function POST(request: NextRequest) {
         ['E-mail', email],
         ['Telefone', telefone],
         ['Cidade', cidade],
+        ['Bairro', bairro],
         ...Object.entries(respostas),
         ...(observacoes ? [['Observações', observacoes]] : []),
       ]

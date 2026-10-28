@@ -32,6 +32,7 @@ export const candidaturasTable = sqliteTable('candidaturas', {
   email: text().notNull(),
   telefone: text().notNull(),
   cidade: text().notNull(),
+  bairro: text(), // Obrigatório no formulário; nulo só em candidaturas anteriores ao campo
   respostas: text({ mode: 'json' }).$type<Record<string, string>>(), // Campos específicos da área: { label: resposta }
   observacoes: text(),
   curriculoUrl: text().notNull(),
