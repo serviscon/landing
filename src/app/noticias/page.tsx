@@ -15,6 +15,7 @@ function NewsCard({ noticia }: NewsCardProps) {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+    timeZone: 'UTC',
   })
 
   return (

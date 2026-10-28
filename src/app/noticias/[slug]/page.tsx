@@ -1,11 +1,12 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
 import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeft } from 'lucide-react'
 import { database, noticiasTable } from '@/db'
 import { and, eq, isNull } from 'drizzle-orm'
+import { normalizeImagens } from '@/lib/validators'
+import { NewsGallery } from './news-gallery'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -65,7 +66,10 @@ export default async function NoticiaPage({ params }: PageProps) {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+    timeZone: 'UTC',
   })
+
+  const imagens = normalizeImagens(noticia)
 
   return (
     <>
@@ -94,19 +98,8 @@ export default async function NoticiaPage({ params }: PageProps) {
             <p className="text-xl text-gray-600">{noticia.resumo}</p>
           </header>
 
-          {/* Imagem Principal */}
-          {noticia.imagemUrl && (
-            <div className="mb-12 overflow-hidden rounded-xl shadow-lg">
-              <Image
-                src={noticia.imagemUrl}
-                alt={noticia.titulo}
-                width={1200}
-                height={600}
-                className="h-auto w-full object-cover"
-                priority
-              />
-            </div>
-          )}
+          {/* Fotos */}
+          <NewsGallery imagens={imagens} titulo={noticia.titulo} />
 
           {/* Conteúdo */}
           <div className="prose prose-lg max-w-4xl">
