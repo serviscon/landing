@@ -18,6 +18,26 @@ function formatDateTime(value: string) {
   })
 }
 
+const UFS =
+  'AC|AL|AP|AM|BA|CE|DF|ES|GO|MA|MT|MS|MG|PA|PB|PR|PE|PI|RJ|RN|RS|RO|RR|SC|SP|SE|TO'
+
+// A cidade é digitada livremente: "São Luís – MA", "sao luis", "São Luís/MA" viram a mesma chave
+function nomeCidade(cidade: string) {
+  return cidade
+    .trim()
+    .replace(new RegExp(`(?:\\s+|\\s*[-–—/,(]\\s*)(${UFS})\\)?\\.?$`, 'i'), '')
+    .replace(/[\s.,;–—-]+$/, '')
+    .trim()
+}
+
+function chaveCidade(cidade: string) {
+  return nomeCidade(cidade)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\s+/g, ' ')
+}
+
 function whatsappUrl(telefone: string) {
   const digitos = telefone.replace(/\D/g, '')
   return `https://wa.me/${digitos.startsWith('55') ? digitos : `55${digitos}`}`
@@ -29,6 +49,7 @@ export default function AdminCandidaturasPage() {
   const [loading, setLoading] = useState(true)
   const [area, setArea] = useState('')
   const [status, setStatus] = useState<'' | 'novo' | 'analisado'>('')
+  const [cidade, setCidade] = useState('')
   const [ocupado, setOcupado] = useState<number | null>(null)
 
   useEffect(() => {
@@ -88,7 +109,28 @@ export default function AdminCandidaturasPage() {
     router.push('/admin/login')
   }
 
-  const filtradas = candidaturas.filter(c => (!area || c.area === area) && (!status || c.status === status))
+  // Opções do filtro de local: uma por cidade, com a grafia mais usada e a quantidade
+  const cidades = Object.entries(
+    candidaturas.reduce<Record<string, Record<string, number>>>((grupos, c) => {
+      const chave = chaveCidade(c.cidade)
+      const nome = nomeCidade(c.cidade) || c.cidade
+      grupos[chave] ??= {}
+      grupos[chave][nome] = (grupos[chave][nome] ?? 0) + 1
+      return grupos
+    }, {})
+  )
+    .map(([chave, grafias]) => {
+      const ordenadas = Object.entries(grafias).sort((a, b) => b[1] - a[1])
+      return { chave, nome: ordenadas[0][0], total: ordenadas.reduce((soma, [, n]) => soma + n, 0) }
+    })
+    .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'))
+
+  const filtradas = candidaturas.filter(
+    c =>
+      (!area || c.area === area) &&
+      (!status || c.status === status) &&
+      (!cidade || chaveCidade(c.cidade) === cidade)
+  )
   const novas = candidaturas.filter(c => c.status === 'novo').length
 
   return (
@@ -137,6 +179,19 @@ export default function AdminCandidaturasPage() {
             <option value="">Todos os status</option>
             <option value="novo">Novas</option>
             <option value="analisado">Analisadas</option>
+          </select>
+          <select
+            value={cidade}
+            onChange={e => setCidade(e.target.value)}
+            aria-label="Filtrar por local"
+            className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
+          >
+            <option value="">Todos os locais</option>
+            {cidades.map(c => (
+              <option key={c.chave} value={c.chave}>
+                {c.nome} ({c.total})
+              </option>
+            ))}
           </select>
           <span className="self-center text-gray-500 text-sm">{filtradas.length} candidatura(s)</span>
         </div>
