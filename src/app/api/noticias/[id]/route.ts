@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { database, noticiasTable } from '@/db'
 import { verifyToken } from '@/lib/auth'
 import { validateNoticiaFields } from '@/lib/validators'
-import { eq, isNull } from 'drizzle-orm'
+import { and, eq, isNull, or } from 'drizzle-orm'
 
 // GET - Obter notícia por ID ou slug
 export async function GET(
@@ -19,10 +19,12 @@ export async function GET(
       .from(noticiasTable)
       .where(
         isAdmin
-          ? eq(noticiasTable.id, parseInt(id)) || eq(noticiasTable.slug, id)
-          : (eq(noticiasTable.id, parseInt(id)) || eq(noticiasTable.slug, id)) &&
-            eq(noticiasTable.status, 'publicado') &&
-            isNull(noticiasTable.deletedAt)
+          ? or(eq(noticiasTable.id, Number(id)), eq(noticiasTable.slug, id))
+          : and(
+              or(eq(noticiasTable.id, Number(id)), eq(noticiasTable.slug, id)),
+              eq(noticiasTable.status, 'publicado'),
+              isNull(noticiasTable.deletedAt)
+            )
       )
       .limit(1)
       .then(results => results[0])

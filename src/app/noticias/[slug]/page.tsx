@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeft } from 'lucide-react'
 import { database, noticiasTable } from '@/db'
-import { eq, isNull } from 'drizzle-orm'
+import { and, eq, isNull } from 'drizzle-orm'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const noticia = await database
     .select()
     .from(noticiasTable)
-    .where(eq(noticiasTable.slug, slug) && eq(noticiasTable.status, 'publicado') && isNull(noticiasTable.deletedAt))
+    .where(and(eq(noticiasTable.slug, slug), eq(noticiasTable.status, 'publicado'), isNull(noticiasTable.deletedAt)))
     .limit(1)
     .then(results => results[0])
 
@@ -53,7 +53,7 @@ export default async function NoticiaPage({ params }: PageProps) {
   const noticia = await database
     .select()
     .from(noticiasTable)
-    .where(eq(noticiasTable.slug, slug) && eq(noticiasTable.status, 'publicado') && isNull(noticiasTable.deletedAt))
+    .where(and(eq(noticiasTable.slug, slug), eq(noticiasTable.status, 'publicado'), isNull(noticiasTable.deletedAt)))
     .limit(1)
     .then(results => results[0])
 

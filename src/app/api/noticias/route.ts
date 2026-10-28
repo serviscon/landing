@@ -3,7 +3,7 @@ import { database, noticiasTable } from '@/db'
 import { verifyToken } from '@/lib/auth'
 import { validateNoticiaFields } from '@/lib/validators'
 import { generateSlug, ensureUniqueSlug } from '@/lib/slug'
-import { desc, eq, isNull } from 'drizzle-orm'
+import { and, desc, eq, isNull } from 'drizzle-orm'
 
 // GET - Listar notícias públicas (apenas publicadas)
 export async function GET(request: NextRequest) {
@@ -22,11 +22,7 @@ export async function GET(request: NextRequest) {
       : database
           .select()
           .from(noticiasTable)
-          .where(
-            isAdmin
-              ? isNull(noticiasTable.deletedAt)
-              : eq(noticiasTable.status, 'publicado') && isNull(noticiasTable.deletedAt)
-          )
+          .where(and(eq(noticiasTable.status, 'publicado'), isNull(noticiasTable.deletedAt)))
           .orderBy(desc(noticiasTable.data))
 
     const noticias = await query.all()
