@@ -1,7 +1,10 @@
+import nodemailer from 'nodemailer'
+
 /**
- * Envio de e-mail pelo Resend (https://resend.com), sem SDK.
- * Variáveis: RESEND_API_KEY, RH_EMAIL (destino) e EMAIL_FROM (remetente de um domínio verificado no Resend).
- * Sem RESEND_API_KEY ou RH_EMAIL, o envio é ignorado.
+ * Envio de e-mail por SMTP, por padrão com uma conta Gmail comum (não depende do domínio da empresa).
+ * Variáveis: SMTP_USER (a conta), SMTP_PASS (senha de app da conta) e RH_EMAIL (destino).
+ * Opcionais para outro provedor: SMTP_HOST e SMTP_PORT (padrão: smtp.gmail.com, 465).
+ * Sem SMTP_USER, SMTP_PASS ou RH_EMAIL, o envio é ignorado.
  */
 
 type EmailInput = {
@@ -20,25 +23,27 @@ export function escapeHtml(value: string): string {
 }
 
 export async function sendEmailToRh({ subject, html, replyTo }: EmailInput): Promise<boolean> {
-  const apiKey = process.env.RESEND_API_KEY
+  const user = process.env.SMTP_USER
+  const pass = process.env.SMTP_PASS
   const to = process.env.RH_EMAIL
-  if (!apiKey || !to) return false
+  if (!user || !pass || !to) return false
 
-  const response = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      from: process.env.EMAIL_FROM || 'Serviscon <onboarding@resend.dev>',
-      to: to.split(',').map(email => email.trim()),
-      subject,
-      html,
-      reply_to: replyTo,
-    }),
+  const port = Number(process.env.SMTP_PORT || 465)
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port,
+    secure: port === 465,
+    // Senhas de app do Google são exibidas com espaços ("abcd efgh ijkl mnop")
+    auth: { user, pass: pass.replace(/\s+/g, '') },
   })
 
-  if (!response.ok) {
-    console.error('Erro ao enviar e-mail:', response.status, await response.text())
-    return false
-  }
+  // O Gmail só envia com o próprio endereço da conta como remetente
+  await transporter.sendMail({
+    from: { name: 'Serviscon Vagas', address: user },
+    to: to.split(',').map(email => email.trim()),
+    subject,
+    html,
+    replyTo,
+  })
   return true
 }
