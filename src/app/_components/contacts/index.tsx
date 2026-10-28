@@ -45,7 +45,7 @@ export function Contacts() {
             </h3>
             <div className="rounded-xl bg-white p-4">
               <CompanyMaps
-                address="R. dos Ipês, 32 - 2º ANDAR – SALA 06 - Jardim Renascença, São Luís - MA, 65075-200"
+                address="Serviscon - Limpeza e Facilities, R. dos Timbós, 75-15 - Jardim Renascença, São Luís - MA, 65075-410"
                 companyName="Serviscon"
                 height="350px"
                 showDirections={true}

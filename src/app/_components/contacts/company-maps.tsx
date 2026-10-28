@@ -93,10 +93,10 @@ export default function CompanyMaps({
         <div className="rounded-lg bg-muted/50 p-4">
           <h4 className="mb-2 font-medium text-blue-800 text-sm">Endereço Completo:</h4>
           <p className="flex flex-col items-center justify-center gap-1 text-muted-foreground text-sm md:flex-row md:flex-wrap md:gap-x-3">
-            <span>Prédio Comercial MN Center</span>
-            <span>R. dos Ipês, 32 - 2º Andar, Sala 06</span>
+            <span>R. dos Timbós, 75-15</span>
             <span>Jardim Renascença</span>
             <span>São Luís - MA</span>
+            <span>CEP 65075-410</span>
           </p>
         </div>
       </CardContent>
