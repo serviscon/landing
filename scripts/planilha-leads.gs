@@ -15,6 +15,9 @@
 
 const SEGREDO = 'COLE_AQUI_O_SEGREDO'
 
+// Aviso por e-mail a cada novo lead (separe vários endereços por vírgula; deixe '' para desligar)
+const AVISO_PARA = 'comercial@serviscon.com.br'
+
 /**
  * Cada informação vai para a coluna cujo título (linha 1) bate com um dos nomes aceitos,
  * em qualquer ordem e ignorando acentos/maiúsculas. Se não existir, a coluna é criada
@@ -57,10 +60,86 @@ function doPost(e) {
       lock.releaseLock()
     }
 
+    // O lead já está salvo: uma falha no e-mail não deve devolver erro ao site
+    try {
+      avisarComercial(dados)
+    } catch (erro) {
+      console.error('Falha ao enviar aviso de lead: ' + erro)
+    }
+
     return resposta({ ok: true })
   } catch (erro) {
     return resposta({ ok: false, error: String(erro) })
   }
+}
+
+function avisarComercial(dados) {
+  if (!AVISO_PARA) return
+
+  const quem = dados.empresa || dados.nome
+  const linhas = [
+    ['Nome', dados.nome],
+    ['Empresa', dados.empresa],
+    ['E-mail', dados.email],
+    ['Telefone', dados.telefone],
+    ['Serviço de interesse', dados.assunto],
+    ['Mensagem', dados.mensagem],
+    ['Recebido em', dados.dataHora],
+  ].filter(([, valor]) => valor)
+
+  const digitos = String(dados.telefone || '').replace(/\D/g, '')
+  const whatsapp = digitos ? 'https://wa.me/' + (digitos.indexOf('55') === 0 ? digitos : '55' + digitos) : ''
+  const planilha = SpreadsheetApp.getActiveSpreadsheet().getUrl()
+
+  const html =
+    '<div style="font-family:Arial,sans-serif;font-size:14px;color:#1f2937">' +
+    '<h2 style="color:#1e3a8a;margin:0 0 12px">Novo lead pelo site</h2>' +
+    '<table style="border-collapse:collapse">' +
+    linhas
+      .map(
+        ([rotulo, valor]) =>
+          '<tr><td style="padding:4px 14px 4px 0;color:#64748b;vertical-align:top"><b>' + escapar(rotulo) +
+          '</b></td><td style="padding:4px 0;white-space:pre-line">' + escapar(valor) + '</td></tr>'
+      )
+      .join('') +
+    '</table>' +
+    '<p style="margin-top:16px">' +
+    (whatsapp ? '<a href="' + whatsapp + '">Chamar no WhatsApp</a> · ' : '') +
+    '<a href="' + planilha + '">Abrir planilha de leads</a></p>' +
+    '<p style="color:#94a3b8;font-size:12px">Responda este e-mail para escrever direto ao cliente.</p>' +
+    '</div>'
+
+  MailApp.sendEmail({
+    to: AVISO_PARA,
+    subject: 'Novo lead do site: ' + quem + (dados.assunto ? ' – ' + dados.assunto : ''),
+    htmlBody: html,
+    name: 'Site Serviscon',
+    replyTo: dados.email,
+  })
+}
+
+/**
+ * Rode esta função uma vez pelo editor (Executar > testarAviso) para autorizar o envio
+ * de e-mails e conferir como o aviso chega. Não grava nada na planilha.
+ */
+function testarAviso() {
+  avisarComercial({
+    nome: 'TESTE - Maria Souza',
+    empresa: 'Empresa de Teste',
+    email: 'teste@exemplo.com',
+    telefone: '(98) 90000-0000',
+    assunto: 'Portaria',
+    mensagem: 'Este é um aviso de teste enviado pelo editor do Apps Script.',
+    dataHora: new Date().toLocaleString('pt-BR'),
+  })
+}
+
+function escapar(valor) {
+  return String(valor)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
 }
 
 // Índice (0-based) da coluna de cada campo; cria no cabeçalho as que faltarem
