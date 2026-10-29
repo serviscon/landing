@@ -3,6 +3,7 @@ import { FaWhatsapp } from 'react-icons/fa'
 import { ShimmerButton } from '@/components/app/shimmer-button'
 import { Badge } from '@/components/ui/badge'
 import CompanyMaps from './company-maps'
+import { FaleConosco } from './fale-conosco'
 import { ContactItems } from './contact-items'
 import { StatItem } from './stat-item'
 
@@ -37,6 +38,8 @@ export function Contacts() {
             <FaWhatsapp />
             SOLICITAR ORÇAMENTO GRÁTIS
           </ShimmerButton>
+
+          <FaleConosco />
 
           <div className="mt-12 rounded-2xl bg-white/10 p-6 backdrop-blur-sm">
             <h3 className="mb-6 flex items-center justify-center gap-2 font-bold text-2xl text-white">
