@@ -22,6 +22,15 @@ const SERVICOS = [
 const WHATSAPP_URL =
   'https://wa.me/5598986133076?text=%F0%9F%91%8B%20Ol%C3%A1!%20Gostaria%20de%20conhecer%20melhor%20os%20servi%C3%A7os%20da%20Serviscon.'
 
+// Conversão "Formulário de proposta" do Google Ads (a tag base fica em app/layout.tsx)
+const CONVERSAO_PROPOSTA = 'AW-11002985895/24CDCOGrzrIdEKf70P4o'
+
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void
+  }
+}
+
 export function FaleConosco() {
   const [enviando, setEnviando] = useState(false)
   const [erros, setErros] = useState<string[]>([])
@@ -42,6 +51,7 @@ export function FaleConosco() {
       }
       form.reset()
       setEnviado(true)
+      window.gtag?.('event', 'conversion', { send_to: CONVERSAO_PROPOSTA })
     } catch {
       setErros(['Não foi possível enviar. Verifique sua conexão e tente novamente.'])
     } finally {
