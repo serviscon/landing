@@ -4,7 +4,7 @@ import { candidaturasTable, database } from '@/db'
 import { verifyToken } from '@/lib/auth'
 import { escapeHtml, sendEmailToRh } from '@/lib/email'
 import { saveFile } from '@/lib/storage'
-import { CURRICULO_EXTENSOES, CURRICULO_MAX_BYTES, getVaga } from '@/lib/vagas'
+import { CIDADES, CURRICULO_EXTENSOES, CURRICULO_MAX_BYTES, getVaga } from '@/lib/vagas'
 
 function texto(formData: FormData, campo: string, max = 200): string {
   const valor = formData.get(campo)
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     if (!nome) errors.push('Nome é obrigatório')
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.push('E-mail inválido')
     if (telefone.replace(/\D/g, '').length < 10) errors.push('Telefone inválido')
-    if (!cidade) errors.push('Cidade é obrigatória')
+    if (!CIDADES.includes(cidade)) errors.push('Selecione a cidade')
     if (!bairro) errors.push('Bairro é obrigatório')
 
     if (!(curriculo instanceof File) || curriculo.size === 0) {

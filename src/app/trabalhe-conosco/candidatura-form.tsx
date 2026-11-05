@@ -1,8 +1,8 @@
 'use client'
 
-import { CheckCircle2, FileText, Lock, Send } from 'lucide-react'
+import { CheckCircle2, ChevronDown, FileText, Lock, MapPin, Send } from 'lucide-react'
 import { useState } from 'react'
-import { CURRICULO_EXTENSOES, CURRICULO_MAX_BYTES, type Vaga } from '@/lib/vagas'
+import { CIDADES, CURRICULO_EXTENSOES, CURRICULO_MAX_BYTES, type Vaga } from '@/lib/vagas'
 
 const inputClass =
   'w-full rounded-md border-[1.5px] border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition-colors focus:border-blue-600 focus:ring-3 focus:ring-blue-600/10'
@@ -126,12 +126,51 @@ function FormularioVaga({ vaga }: { vaga: Vaga }) {
         <div className="min-w-0">
           <h2 className="font-bold text-white text-xl">{vaga.titulo}</h2>
           <p className="mt-1 text-sm text-white/80">{vaga.descricao}</p>
-          <span className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/15 px-2.5 py-0.5 font-bold text-[11px] text-white uppercase tracking-wide">
-            <span className="size-2 rounded-full bg-emerald-400" />
-            Vagas abertas
-          </span>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-white/25 bg-white/15 px-2.5 py-0.5 font-bold text-[11px] text-white uppercase tracking-wide">
+              <span className="size-2 rounded-full bg-emerald-400" />
+              Vagas abertas
+            </span>
+            {vaga.local && (
+              <span className="inline-flex items-center gap-1 rounded-full border border-white/25 bg-white/15 px-2.5 py-0.5 font-bold text-[11px] text-white uppercase tracking-wide">
+                <MapPin className="size-3" />
+                {vaga.local}
+              </span>
+            )}
+          </div>
         </div>
       </div>
+
+      {(vaga.atividades?.length || vaga.requisitos?.length) && (
+        <details className="group border-slate-200 border-b bg-slate-50 px-6 py-4 sm:px-7">
+          <summary className="flex cursor-pointer list-none items-center justify-between gap-2 font-semibold text-blue-800 text-sm">
+            Ver descrição completa da vaga
+            <ChevronDown className="size-4 transition-transform group-open:rotate-180" />
+          </summary>
+          <div className="mt-4 grid gap-6 text-slate-600 text-sm sm:grid-cols-2">
+            {vaga.atividades?.length ? (
+              <div>
+                <h3 className="mb-2 font-bold text-slate-800 text-xs uppercase tracking-wide">Principais atividades</h3>
+                <ul className="list-disc space-y-1 pl-5">
+                  {vaga.atividades.map(item => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+            {vaga.requisitos?.length ? (
+              <div>
+                <h3 className="mb-2 font-bold text-slate-800 text-xs uppercase tracking-wide">Requisitos</h3>
+                <ul className="list-disc space-y-1 pl-5">
+                  {vaga.requisitos.map(item => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </div>
+        </details>
+      )}
 
       <div className="p-6 sm:p-7">
         {enviadoPara !== null ? (
@@ -194,7 +233,14 @@ function FormularioVaga({ vaga }: { vaga: Vaga }) {
                 <label htmlFor={`${vaga.id}-cidade`} className={labelClass}>
                   Cidade <Required />
                 </label>
-                <input id={`${vaga.id}-cidade`} name="cidade" required placeholder="Ex.: São Luís – MA" className={inputClass} />
+                <select id={`${vaga.id}-cidade`} name="cidade" required defaultValue="" className={inputClass}>
+                  <option value="" disabled>
+                    Selecione
+                  </option>
+                  {CIDADES.map(cidade => (
+                    <option key={cidade}>{cidade}</option>
+                  ))}
+                </select>
               </div>
               <div className="flex flex-col gap-1.5">
                 <label htmlFor={`${vaga.id}-bairro`} className={labelClass}>
