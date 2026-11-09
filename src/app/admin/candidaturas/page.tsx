@@ -146,7 +146,12 @@ export default function AdminCandidaturasPage() {
     router.push('/admin/login')
   }
 
-  const cidades = opcoesFiltro(candidaturas.map(c => ({ chave: chaveCidade(c.cidade), nome: nomeDaCidade(c.cidade) })))
+  // Só as cidades atendidas (lista do formulário); as demais continuam em "Todos os locais"
+  const cidades = opcoesFiltro(
+    candidaturas
+      .filter(c => chaveCidade(c.cidade) in NOME_OFICIAL)
+      .map(c => ({ chave: chaveCidade(c.cidade), nome: nomeDaCidade(c.cidade) }))
+  )
 
   // Bairros da cidade selecionada (ou de todas)
   const bairros = opcoesFiltro(
