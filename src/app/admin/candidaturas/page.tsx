@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import type { Candidatura } from '@/db'
+import { bairroOficialQualquer, chaveBairro } from '@/lib/bairros'
 import { CIDADES, getVaga, VAGAS } from '@/lib/vagas'
 
 // createdAt vem do SQLite em UTC ("YYYY-MM-DD HH:MM:SS")
@@ -52,6 +53,11 @@ function chaveCidade(cidade: string) {
 
 // Cidades da lista do formulário sempre aparecem com a grafia oficial
 const NOME_OFICIAL: Record<string, string> = Object.fromEntries(CIDADES.map(nome => [chaveCidade(nome), nome]))
+
+// Bairros da lista oficial sempre com a grafia oficial; os demais como foram digitados
+function nomeDoBairro(bairro: string) {
+  return bairroOficialQualquer(bairro) ?? bairro.trim()
+}
 
 function nomeDaCidade(cidade: string) {
   return NOME_OFICIAL[chaveCidade(cidade)] ?? (nomeCidade(cidade) || cidade)
@@ -157,7 +163,7 @@ export default function AdminCandidaturasPage() {
   const bairros = opcoesFiltro(
     candidaturas
       .filter(c => c.bairro?.trim() && (!cidade || chaveCidade(c.cidade) === cidade))
-      .map(c => ({ chave: chaveTexto(c.bairro ?? ''), nome: (c.bairro ?? '').trim() }))
+      .map(c => ({ chave: chaveBairro(c.bairro ?? ''), nome: nomeDoBairro(c.bairro ?? '') }))
   )
 
   const filtradas = candidaturas.filter(
@@ -165,7 +171,7 @@ export default function AdminCandidaturasPage() {
       (!area || c.area === area) &&
       (!status || c.status === status) &&
       (!cidade || chaveCidade(c.cidade) === cidade) &&
-      (!bairro || chaveTexto(c.bairro ?? '') === bairro)
+      (!bairro || chaveBairro(c.bairro ?? '') === bairro)
   )
   const novas = candidaturas.filter(c => c.status === 'novo').length
 
@@ -279,7 +285,7 @@ export default function AdminCandidaturasPage() {
                       </div>
                       <p className="text-gray-600 text-sm">
                         {vaga ? `${vaga.icone} ${vaga.titulo}` : candidatura.area} ·{' '}
-                        {candidatura.bairro ? `${candidatura.bairro}, ${candidatura.cidade}` : candidatura.cidade} · enviada em{' '}
+                        {candidatura.bairro ? `${nomeDoBairro(candidatura.bairro)}, ${nomeDaCidade(candidatura.cidade)}` : nomeDaCidade(candidatura.cidade)} · enviada em{' '}
                         {formatDateTime(candidatura.createdAt)}
                       </p>
                     </div>

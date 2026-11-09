@@ -4,6 +4,7 @@ import { candidaturasTable, database } from '@/db'
 import { verifyToken } from '@/lib/auth'
 import { escapeHtml, sendEmailToRh } from '@/lib/email'
 import { saveFile } from '@/lib/storage'
+import { BAIRROS_POR_CIDADE, bairroOficial } from '@/lib/bairros'
 import { CIDADES, CURRICULO_EXTENSOES, CURRICULO_MAX_BYTES, getVaga } from '@/lib/vagas'
 
 function texto(formData: FormData, campo: string, max = 200): string {
@@ -26,7 +27,9 @@ export async function POST(request: NextRequest) {
     const email = texto(formData, 'email')
     const telefone = texto(formData, 'telefone', 40)
     const cidade = texto(formData, 'cidade')
-    const bairro = texto(formData, 'bairro')
+    const bairroDigitado = texto(formData, 'bairro')
+    // Cidades com lista: só bairros da lista, sempre com o nome oficial
+    const bairro = BAIRROS_POR_CIDADE[cidade] ? (bairroOficial(cidade, bairroDigitado) ?? '') : bairroDigitado
     const observacoes = texto(formData, 'observacoes', 2000)
     const curriculo = formData.get('curriculo')
 
@@ -36,7 +39,7 @@ export async function POST(request: NextRequest) {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.push('E-mail inválido')
     if (telefone.replace(/\D/g, '').length < 10) errors.push('Telefone inválido')
     if (!CIDADES.includes(cidade)) errors.push('Selecione a cidade')
-    if (!bairro) errors.push('Bairro é obrigatório')
+    if (!bairro) errors.push(bairroDigitado ? 'Selecione um bairro da lista' : 'Bairro é obrigatório')
 
     if (!(curriculo instanceof File) || curriculo.size === 0) {
       errors.push('Envie seu currículo')

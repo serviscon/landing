@@ -2,6 +2,7 @@
 
 import { CheckCircle2, ChevronDown, FileText, Lock, MapPin, Send } from 'lucide-react'
 import { useState } from 'react'
+import { BAIRROS_POR_CIDADE } from '@/lib/bairros'
 import { CIDADES, CURRICULO_EXTENSOES, CURRICULO_MAX_BYTES, type Vaga } from '@/lib/vagas'
 
 const inputClass =
@@ -65,6 +66,8 @@ function FormularioVaga({ vaga }: { vaga: Vaga }) {
   const [enviando, setEnviando] = useState(false)
   const [erros, setErros] = useState<string[]>([])
   const [enviadoPara, setEnviadoPara] = useState<string | null>(null)
+  const [cidade, setCidade] = useState('')
+  const bairrosDaCidade = BAIRROS_POR_CIDADE[cidade]
 
   function escolherArquivo(file: File | undefined) {
     if (!file) return
@@ -105,6 +108,7 @@ function FormularioVaga({ vaga }: { vaga: Vaga }) {
       }
       setEnviadoPara(String(dados.get('nome') ?? '').split(' ')[0])
       form.reset()
+      setCidade('')
       setArquivo(null)
     } catch {
       setErros(['Não foi possível enviar. Verifique sua conexão e tente novamente.'])
@@ -233,7 +237,14 @@ function FormularioVaga({ vaga }: { vaga: Vaga }) {
                 <label htmlFor={`${vaga.id}-cidade`} className={labelClass}>
                   Cidade <Required />
                 </label>
-                <select id={`${vaga.id}-cidade`} name="cidade" required defaultValue="" className={inputClass}>
+                <select
+                  id={`${vaga.id}-cidade`}
+                  name="cidade"
+                  required
+                  value={cidade}
+                  onChange={e => setCidade(e.target.value)}
+                  className={inputClass}
+                >
                   <option value="" disabled>
                     Selecione
                   </option>
@@ -246,7 +257,27 @@ function FormularioVaga({ vaga }: { vaga: Vaga }) {
                 <label htmlFor={`${vaga.id}-bairro`} className={labelClass}>
                   Bairro <Required />
                 </label>
-                <input id={`${vaga.id}-bairro`} name="bairro" required placeholder="Ex.: Cohama" className={inputClass} />
+                {bairrosDaCidade ? (
+                  // key: trocar de cidade limpa o bairro escolhido
+                  <select key={cidade} id={`${vaga.id}-bairro`} name="bairro" required defaultValue="" className={inputClass}>
+                    <option value="" disabled>
+                      Selecione o bairro
+                    </option>
+                    {bairrosDaCidade.map(bairro => (
+                      <option key={bairro}>{bairro}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    key={cidade || 'sem-cidade'}
+                    id={`${vaga.id}-bairro`}
+                    name="bairro"
+                    required
+                    disabled={!cidade}
+                    placeholder={cidade ? 'Digite seu bairro' : 'Escolha a cidade primeiro'}
+                    className={`${inputClass} disabled:cursor-not-allowed disabled:opacity-60`}
+                  />
+                )}
               </div>
 
               {vaga.campos.map(campo => (
