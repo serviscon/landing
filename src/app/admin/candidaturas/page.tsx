@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import type { Candidatura } from '@/db'
-import { getVaga, VAGAS } from '@/lib/vagas'
+import { CIDADES, getVaga, VAGAS } from '@/lib/vagas'
 
 // createdAt vem do SQLite em UTC ("YYYY-MM-DD HH:MM:SS")
 function formatDateTime(value: string) {
@@ -30,18 +30,31 @@ function nomeCidade(cidade: string) {
     .trim()
 }
 
-// Ignora acentos, maiúsculas e espaços extras: "Cohama", "COHAMA " e "cohama" viram a mesma chave
+// Ignora acentos, maiúsculas, hífens e espaços extras: "Cohama", "COHAMA " e "co-hama" viram a mesma chave
 function chaveTexto(texto: string) {
   return texto
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
-    .replace(/\s+/g, ' ')
+    .replace(/[^a-z0-9]+/g, ' ')
     .trim()
 }
 
+const ESTADOS =
+  'acre|alagoas|amapa|amazonas|bahia|ceara|distrito federal|espirito santo|goias|maranhao|mato grosso do sul|mato grosso|minas gerais|para|paraiba|parana|pernambuco|piaui|rio de janeiro|rio grande do norte|rio grande do sul|rondonia|roraima|santa catarina|sao paulo|sergipe|tocantins'
+
+// "São Luís Maranhão", "sao-luis" e "São Luís - MA" viram a mesma chave
 function chaveCidade(cidade: string) {
-  return chaveTexto(nomeCidade(cidade))
+  const chave = chaveTexto(nomeCidade(cidade))
+  const semEstado = chave.replace(new RegExp(`\\s+(estado d[eo] )?(${ESTADOS})$`), '').trim()
+  return semEstado || chave
+}
+
+// Cidades da lista do formulário sempre aparecem com a grafia oficial
+const NOME_OFICIAL: Record<string, string> = Object.fromEntries(CIDADES.map(nome => [chaveCidade(nome), nome]))
+
+function nomeDaCidade(cidade: string) {
+  return NOME_OFICIAL[chaveCidade(cidade)] ?? (nomeCidade(cidade) || cidade)
 }
 
 type OpcaoFiltro = { chave: string; nome: string; total: number }
@@ -133,7 +146,7 @@ export default function AdminCandidaturasPage() {
     router.push('/admin/login')
   }
 
-  const cidades = opcoesFiltro(candidaturas.map(c => ({ chave: chaveCidade(c.cidade), nome: nomeCidade(c.cidade) || c.cidade })))
+  const cidades = opcoesFiltro(candidaturas.map(c => ({ chave: chaveCidade(c.cidade), nome: nomeDaCidade(c.cidade) })))
 
   // Bairros da cidade selecionada (ou de todas)
   const bairros = opcoesFiltro(
