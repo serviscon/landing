@@ -43,6 +43,7 @@ export const BAIRROS_POR_CIDADE: Record<string, string[]> = {
     'Cantinho do Céu',
     'Caratatiua',
     'Cassaco',
+    'Centro',
     'Chácara Brasil',
     'Cidade Nova do Gapara',
     'Cidade Olímpica',
