@@ -10,6 +10,8 @@ const inputClass =
 // Sugestões do campo de serviço (o cliente também pode escrever outro)
 const SERVICOS = [
   'Limpeza e Conservação',
+  'Limpeza de Vidros e Fachadas',
+  'Limpeza Pós-Obra',
   'Portaria',
   'Recepção',
   'Jardinagem e Paisagismo',

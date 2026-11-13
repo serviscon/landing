@@ -43,6 +43,8 @@ export function Footer() {
             title="Nossos Serviços"
             servicesOrSegments={[
               'Limpeza e Conservação',
+              'Limpeza de Vidros e Fachadas',
+              'Limpeza Pós-Obra',
               'Portaria',
               'Recepção',
               'Jardinagem e Paisagismo',

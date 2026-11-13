@@ -1,4 +1,4 @@
-import { CheckCircle, Eye, Leaf, Shield, Sparkles, UserCheck, Wrench } from 'lucide-react'
+import { Building2, CheckCircle, Eye, HardHat, Leaf, Shield, Sparkles, UserCheck, Wrench } from 'lucide-react'
 import Image from 'next/image'
 import { FaWhatsapp } from 'react-icons/fa'
 import { ShimmerButton } from '@/components/app/shimmer-button'
@@ -17,6 +17,34 @@ const services = [
       'Equipamentos modernos para grandes ambientes',
       'Procedimentos sustentáveis e eficientes',
       'Supervisão constante para garantir excelência',
+    ],
+  },
+  {
+    icon: <Building2 className="size-8" />,
+    title: 'Limpeza de Vidros e Fachadas',
+    description:
+      'Limpeza de vidros, janelas e fachadas, inclusive em altura, com equipe treinada e equipamentos de segurança',
+    image: '/services/limpeza.jpeg',
+    features: [
+      'Vidros, janelas, esquadrias e fachadas',
+      'Trabalho em altura conforme a NR-35',
+      'Profissionais treinados e equipados com EPIs',
+      'Produtos que não mancham nem danificam superfícies',
+      'Valorização da imagem do seu imóvel',
+    ],
+  },
+  {
+    icon: <HardHat className="size-8" />,
+    title: 'Limpeza Pós-Obra',
+    description:
+      'Remoção de resíduos de obra e reforma, deixando o ambiente limpo e pronto para uso',
+    image: '/services/limpeza2.jpg',
+    features: [
+      'Remoção de poeira, cimento, tinta e restos de obra',
+      'Limpeza de pisos, vidros, esquadrias e revestimentos',
+      'Técnicas e produtos adequados a cada acabamento',
+      'Equipe dimensionada para cumprir o prazo de entrega',
+      'Ambiente pronto para mudança ou inauguração',
     ],
   },
   {
