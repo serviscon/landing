@@ -40,7 +40,8 @@ const services = [
     title: 'Limpeza Pós-Obra',
     description:
       'Remoção de resíduos de obra e reforma, deixando o ambiente limpo e pronto para uso',
-    image: '/services/limpeza2.jpg',
+    image: '/services/pos-obra.jpg',
+    imagePosition: '50% 65%',
     features: [
       'Remoção de poeira, cimento, tinta e restos de obra',
       'Limpeza de pisos, vidros, esquadrias e revestimentos',
