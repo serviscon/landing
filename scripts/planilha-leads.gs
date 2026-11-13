@@ -319,6 +319,8 @@ function emailBoasVindas(lead) {
 function emailServicos(lead) {
   const servicos = [
     ['Limpeza e Conservação', 'Ambientes limpos, organizados e seguros todos os dias.'],
+    ['Limpeza de Vidros e Fachadas', 'Vidros e fachadas impecáveis, inclusive em altura.'],
+    ['Limpeza Pós-Obra', 'Ambiente livre de resíduos e pronto para uso após a obra.'],
     ['Portaria', 'Controle de acesso e atendimento a visitantes, de dia e de noite.'],
     ['Recepção', 'Primeira impressão cordial e profissional para sua empresa.'],
     ['Jardinagem e Paisagismo', 'Áreas verdes bem cuidadas e valorizadas.'],

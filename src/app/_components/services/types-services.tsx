@@ -1,4 +1,4 @@
-import { CheckCircle, Eye, Leaf, Shield, Sparkles, UserCheck, Wrench } from 'lucide-react'
+import { Building2, CheckCircle, Eye, HardHat, Leaf, Shield, Sparkles, UserCheck, Wrench } from 'lucide-react'
 import Image from 'next/image'
 import { FaWhatsapp } from 'react-icons/fa'
 import { ShimmerButton } from '@/components/app/shimmer-button'
@@ -17,6 +17,37 @@ const services = [
       'Equipamentos modernos para grandes ambientes',
       'Procedimentos sustentáveis e eficientes',
       'Supervisão constante para garantir excelência',
+    ],
+  },
+  {
+    icon: <Building2 className="size-8" />,
+    title: 'Limpeza de Vidros e Fachadas',
+    description:
+      'Limpeza de vidros, janelas e fachadas, inclusive em altura, com equipe treinada e equipamentos de segurança',
+    image: '/services/vidros-fachadas.jpg',
+    // Foto vertical: mostra o trabalho no vidro e o profissional
+    imagePosition: '50% 75%',
+    features: [
+      'Vidros, janelas, esquadrias e fachadas',
+      'Trabalho em altura conforme a NR-35',
+      'Profissionais treinados e equipados com EPIs',
+      'Produtos que não mancham nem danificam superfícies',
+      'Valorização da imagem do seu imóvel',
+    ],
+  },
+  {
+    icon: <HardHat className="size-8" />,
+    title: 'Limpeza Pós-Obra',
+    description:
+      'Remoção de resíduos de obra e reforma, deixando o ambiente limpo e pronto para uso',
+    image: '/services/pos-obra.jpg',
+    imagePosition: '50% 65%',
+    features: [
+      'Remoção de poeira, cimento, tinta e restos de obra',
+      'Limpeza de pisos, vidros, esquadrias e revestimentos',
+      'Técnicas e produtos adequados a cada acabamento',
+      'Equipe dimensionada para cumprir o prazo de entrega',
+      'Ambiente pronto para mudança ou inauguração',
     ],
   },
   {
@@ -97,6 +128,7 @@ export function TypesServices() {
               src={service.image as string}
               alt={service.title}
               fill
+              style={{ objectPosition: service.imagePosition }}
               className="object-cover transition-transform duration-300 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"></div>
