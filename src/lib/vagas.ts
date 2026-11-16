@@ -41,6 +41,63 @@ const DISPONIBILIDADE: CampoExtra = {
 
 export const VAGAS: Vaga[] = [
   {
+    id: 'supervisor-operacional',
+    icone: '📊',
+    aba: 'Supervisor Operacional',
+    titulo: 'Supervisor Operacional / Facilities',
+    descricao:
+      'Supervisão dos serviços de limpeza, conservação, jardinagem, portaria e recepção, com gestão de equipes, escalas, materiais e implantação de novos contratos.',
+    aberta: true,
+    atividades: [
+      'Supervisionar os serviços de limpeza, conservação, jardinagem, portaria e recepção',
+      'Elaborar escalas de trabalho e controlar a distribuição de atividades',
+      'Participar da implantação de novos contratos de Facilities, conduzindo o planejamento, levantamento de necessidades, mobilização de equipes, fornecedores, equipamentos, materiais e infraestrutura',
+      'Controlar materiais, insumos, equipamentos e estoque',
+      'Garantir o cumprimento das normas de segurança, higiene e conservação',
+      'Fiscalizar o uso, a conservação e as condições dos EPIs nas equipes operacionais',
+      'Desenvolver planos de melhoria para otimização dos serviços e redução de custos',
+      'Elaborar relatórios de desempenho e apresentar resultados à gestão',
+      'Administrar conflitos e apoiar o desenvolvimento dos colaboradores',
+    ],
+    requisitos: [
+      'Ensino superior completo ou cursando em Administração, Gestão de Processos ou áreas correlatas',
+      'Experiência anterior em supervisão operacional',
+      'Conhecimento em gestão de equipes e indicadores de desempenho',
+      'Domínio do Pacote Office',
+      'Boa comunicação, liderança e capacidade de tomada de decisão',
+      'Organização, proatividade e visão estratégica',
+      'Possuir CNH categoria A e B',
+    ],
+    campos: [
+      {
+        id: 'escolaridade',
+        label: 'Escolaridade',
+        opcoes: [
+          'Ensino superior completo (Administração, Gestão de Processos ou correlatas)',
+          'Cursando ensino superior (Administração, Gestão de Processos ou correlatas)',
+          'Ensino superior em outra área',
+          'Sem ensino superior',
+        ],
+      },
+      {
+        id: 'experiencia',
+        label: 'Experiência em supervisão operacional',
+        opcoes: ['Sem experiência', 'Menos de 1 ano', '1 a 3 anos', 'Mais de 3 anos'],
+      },
+      {
+        id: 'cnh',
+        label: 'CNH',
+        opcoes: ['Categoria A e B', 'Somente categoria B', 'Somente categoria A', 'Não possuo'],
+      },
+      {
+        id: 'office',
+        label: 'Pacote Office',
+        opcoes: ['Avançado', 'Intermediário', 'Básico'],
+      },
+    ],
+    placeholderObs: 'Empresas e contratos que já supervisionou, tamanho das equipes, cursos…',
+  },
+  {
     id: 'mecanico-caldeireiro',
     icone: '⚙️',
     aba: 'Mecânico Caldeireiro',
