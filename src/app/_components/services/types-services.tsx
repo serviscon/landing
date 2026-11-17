@@ -25,8 +25,8 @@ const services = [
     description:
       'Limpeza de vidros, janelas e fachadas, inclusive em altura, com equipe treinada e equipamentos de segurança',
     image: '/services/vidros-fachadas.jpg',
-    // Foto vertical: mostra o trabalho no vidro e o profissional
-    imagePosition: '50% 75%',
+    // Foto vertical: mostra a escova e a haste no vidro
+    imagePosition: '50% 5%',
     features: [
       'Vidros, janelas, esquadrias e fachadas',
       'Trabalho em altura conforme a NR-35',
@@ -41,7 +41,7 @@ const services = [
     description:
       'Remoção de resíduos de obra e reforma, deixando o ambiente limpo e pronto para uso',
     image: '/services/pos-obra.jpg',
-    imagePosition: '50% 65%',
+    imagePosition: '50% 68%',
     features: [
       'Remoção de poeira, cimento, tinta e restos de obra',
       'Limpeza de pisos, vidros, esquadrias e revestimentos',
