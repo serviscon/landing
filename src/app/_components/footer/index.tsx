@@ -6,7 +6,12 @@ import { SiInstagram } from 'react-icons/si'
 import { ServiceAndSegments } from './service-and-segments'
 import { SocialIconTooltip } from './social-icon-tooltip'
 
-export function Footer() {
+type FooterProps = {
+  // Esconde o WhatsApp do comercial (usado na página de vagas)
+  semWhatsapp?: boolean
+}
+
+export function Footer({ semWhatsapp = false }: FooterProps) {
   return (
     <footer className="bg-blue-950 py-12 text-white">
       <div className="container mx-auto px-4">
@@ -30,12 +35,14 @@ export function Footer() {
               <SocialIconTooltip link="https://www.linkedin.com/company/serviscon-eireli/" label="LinkedIn">
                 <GrLinkedin />
               </SocialIconTooltip>
-              <SocialIconTooltip
-                link="https://wa.me/5598986133076?text=%F0%9F%91%8B%20Ol%C3%A1!%20Gostaria%20de%20conhecer%20melhor%20os%20servi%C3%A7os%20da%20Serviscon."
-                label="Whatsapp"
-              >
-                <FaWhatsapp />
-              </SocialIconTooltip>
+              {!semWhatsapp && (
+                <SocialIconTooltip
+                  link="https://wa.me/5598986133076?text=%F0%9F%91%8B%20Ol%C3%A1!%20Gostaria%20de%20conhecer%20melhor%20os%20servi%C3%A7os%20da%20Serviscon."
+                  label="Whatsapp"
+                >
+                  <FaWhatsapp />
+                </SocialIconTooltip>
+              )}
             </div>
           </div>
 

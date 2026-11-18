@@ -30,7 +30,7 @@ export default function TrabalheConoscoPage() {
         <CandidaturaForms vagas={VAGAS.filter(vaga => vaga.aberta)} />
       </section>
 
-      <Footer />
+      <Footer semWhatsapp />
     </main>
   )
 }

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Fragment } from 'react'
 import { FaWhatsapp } from 'react-icons/fa'
 import { ShimmerButton } from '@/components/app/shimmer-button'
@@ -12,6 +13,8 @@ type NavItemsProps = {
 }
 
 export function NavItems({ setOpen }: NavItemsProps) {
+  // Na página de vagas, sem WhatsApp do comercial (candidatos usavam para pedir emprego)
+  const paginaDeVagas = usePathname().startsWith('/trabalhe-conosco')
   const navItems = [
     { label: 'Início', href: '/#home' },
     { label: 'Parceiros', href: '/#partners' },
@@ -47,9 +50,12 @@ export function NavItems({ setOpen }: NavItemsProps) {
         </Fragment>
       ))}
 
-      <Separator className="my-2 bg-muted/50 lg:hidden" />
-
-      <ShimmerButton icon={<FaWhatsapp />}>Solicitar Orçamento</ShimmerButton>
+      {!paginaDeVagas && (
+        <>
+          <Separator className="my-2 bg-muted/50 lg:hidden" />
+          <ShimmerButton icon={<FaWhatsapp />}>Solicitar Orçamento</ShimmerButton>
+        </>
+      )}
     </>
   )
 }
